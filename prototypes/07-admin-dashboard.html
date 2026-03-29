@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicholas Composer — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1b2e;
+  --navy-mid: #1a2d4a;
+  --navy-light: #243b5c;
+  --cream: #f5f0e8;
+  --cream-dark: #e8e0d2;
+  --cream-mid: #ece5d8;
+  --gold: #c8963e;
+  --gold-light: #d4a854;
+  --gold-muted: #a07830;
+  --gold-pale: #f0e6d0;
+  --text-dark: #1a1a18;
+  --text-mid: #5a5650;
+  --text-light: #8a8580;
+  --tag-bg: #eae5dc;
+  --tag-color: #5a5650;
+  --green-bg: #e8f5ee;
+  --green-text: #2a7a5a;
+  --amber-bg: #faf0e6;
+  --amber-text: #a07830;
+  --red-bg: #fce8e8;
+  --red-text: #993030;
+  --blue-bg: #e8f0f8;
+  --blue-text: #2a5a8a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-dark);
+  background: var(--cream);
+}
+
+/* ── Layout ── */
+.admin { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  background: var(--navy);
+  padding: 20px 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sb-logo {
+  font-family: 'Source Serif 4', serif;
+  color: var(--cream);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(245,240,232,0.08);
+}
+.sb-logo span { color: var(--gold); }
+.sb-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cream-dark);
+  opacity: 0.3;
+  padding: 18px 20px 6px;
+}
+.sb-nav { list-style: none; }
+.sb-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--cream-dark);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.sb-nav li a:hover {
+  opacity: 0.9;
+  background: rgba(245,240,232,0.04);
+}
+.sb-nav li a.active {
+  opacity: 1;
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: rgba(200,150,62,0.08);
+}
+.sb-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+.sb-count {
+  margin-left: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  background: rgba(245,240,232,0.1);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.sb-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(245,240,232,0.08);
+}
+.sb-footer a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--cream-dark);
+  opacity: 0.4;
+  text-decoration: none;
+}
+.sb-footer a:hover { opacity: 0.7; }
+
+/* ── Main Area ── */
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: white;
+  border-bottom: 1px solid var(--cream-dark);
+  flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; }
+.topbar-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  background: var(--tag-bg);
+  color: var(--tag-color);
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 7px 16px;
+  border-radius: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid var(--cream-dark);
+  background: white;
+  color: var(--text-mid);
+}
+.btn:hover { border-color: var(--gold); color: var(--gold-muted); }
+.btn-primary { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 500; }
+.btn-primary:hover { background: var(--gold-light); }
+.btn-sm { padding: 4px 10px; font-size: 9px; }
+.btn-success { border-color: var(--green-text); color: var(--green-text); }
+.btn-success:hover { background: var(--green-bg); }
+.btn-danger { border-color: var(--red-text); color: var(--red-text); }
+.btn-danger:hover { background: var(--red-bg); }
+
+/* ── View Toggle ── */
+.view-toggle {
+  display: flex;
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+  border-radius: 5px;
+  padding: 2px;
+  gap: 2px;
+}
+.view-btn {
+  padding: 5px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 3px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.view-btn.active { background: var(--navy); color: var(--cream); }
+
+/* ── Split Layout ── */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Catalog Panel ── */
+.catalog-panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--cream-dark);
+  overflow-y: auto;
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+/* ── Stats Row ── */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.stat-card {
+  background: white;
+  border: 1px solid var(--cream-dark);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+.stat-val { font-size: 20px; font-weight: 500; }
+.stat-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+/* ── Toolbar ── */
+.toolbar-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.search-input {
+  padding: 7px 12px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  background: white;
+  color: var(--text-dark);
+  width: 240px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--gold); }
+.filter-select {
+  padding: 7px 10px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  background: white;
+  color: var(--text-mid);
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── Table ── */
+.catalog-table {
+  background: white;
+  border: 1px solid var(--cream-dark);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ct { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ct th {
+  text-align: left;
+  padding: 8px 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-dark);
+  font-weight: 400;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.ct td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--cream-mid);
+  vertical-align: middle;
+}
+.ct tr:last-child td { border-bottom: none; }
+.ct tr { transition: background 0.15s; cursor: pointer; }
+.ct tr:hover td { background: rgba(200,150,62,0.03); }
+.ct tr.highlighted td { background: var(--amber-bg); }
+.ct tr.updated td { background: var(--green-bg); }
+.ct .title-cell { font-weight: 500; }
+.ct .mono { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-mid); }
+.ct .note-cell {
+  font-family: 'Source Serif 4', serif;
+  font-size: 11px;
+  color: var(--text-mid);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.status-published { background: var(--green-bg); color: var(--green-text); }
+.status-draft { background: var(--tag-bg); color: var(--tag-color); }
+.status-wip { background: var(--amber-bg); color: var(--amber-text); }
+
+.asset-pills { display: flex; gap: 3px; flex-wrap: wrap; }
+.asset-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.asset-pill.has { background: var(--green-bg); color: var(--green-text); }
+.asset-pill.missing { background: var(--red-bg); color: var(--red-text); }
+
+/* ── AI Panel ── */
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  overflow: hidden;
+}
+.ai-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--cream-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.ai-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: glow 2s ease-in-out infinite;
+}
+@keyframes glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.ai-title { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--navy); }
+.ai-model { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-light); margin-left: auto; }
+
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ai-msg {
+  max-width: 96%;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ai-msg.user {
+  background: var(--navy);
+  color: var(--cream);
+  align-self: flex-end;
+}
+.ai-msg.assistant {
+  background: var(--cream);
+  color: var(--text-dark);
+  align-self: flex-start;
+  border: 1px solid var(--cream-dark);
+}
+.msg-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  display: block;
+  letter-spacing: 0.04em;
+}
+.ai-msg.user .msg-label { color: var(--gold-light); }
+.ai-msg.applied {
+  background: var(--green-bg);
+  border-color: var(--green-text);
+}
+.ai-msg.applied .msg-label { color: var(--green-text); }
+
+.scope-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  display: inline-block;
+  margin-top: 8px;
+}
+
+/* ── Diff Blocks ── */
+.diff-block {
+  background: white;
+  border: 1px solid var(--cream-dark);
+  border-radius: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  transition: border-color 0.2s;
+}
+.diff-block.approved { border-color: var(--green-text); }
+.diff-header {
+  padding: 7px 12px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-dark);
+  font-weight: 500;
+  color: var(--text-mid);
+  font-size: 10px;
+  transition: background 0.2s;
+}
+.diff-block.approved .diff-header { background: var(--green-bg); color: var(--green-text); }
+.diff-line {
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--cream-mid);
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.diff-line:last-of-type { border-bottom: none; }
+.diff-line.del { background: #fef2f2; color: var(--red-text); }
+.diff-line.add { background: #f0faf4; color: var(--green-text); }
+.diff-line.ctx { color: var(--text-light); }
+.diff-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--cream-dark);
+}
+
+/* ── Progress ── */
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--amber-bg);
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--amber-text);
+}
+.progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Quick Actions ── */
+.quick-actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 10px 18px;
+  border-top: 1px solid var(--cream-mid);
+  background: var(--cream);
+  flex-shrink: 0;
+}
+.quick-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 5px 12px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 14px;
+  background: white;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.quick-btn:hover { border-color: var(--gold); color: var(--gold-muted); }
+
+/* ── Input Area ── */
+.ai-input-area {
+  padding: 14px 18px;
+  border-top: 1px solid var(--cream-dark);
+  display: flex;
+  gap: 8px;
+  background: white;
+  flex-shrink: 0;
+}
+.ai-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text-dark);
+  background: var(--cream);
+  outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 100px;
+}
+.ai-input:focus { border-color: var(--gold); background: white; }
+.ai-input::placeholder { color: var(--text-light); }
+.send-btn {
+  align-self: flex-end;
+  padding: 10px 18px;
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.send-btn:hover { background: var(--gold-light); }
+
+/* ── Commissions Mini ── */
+.comm-section-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.commission-card {
+  background: white;
+  border: 1px solid var(--cream-dark);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+.commission-card:hover { border-color: var(--gold); }
+.comm-bar {
+  width: 4px;
+  border-radius: 2px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+.comm-bar.inquiry { background: var(--blue-text); }
+.comm-bar.active { background: var(--gold); }
+.comm-bar.completed { background: var(--green-text); }
+.comm-body { flex: 1; min-width: 0; }
+.comm-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.comm-detail {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+.comm-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.comm-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-light); }
+.comm-amount { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="admin">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-logo">Nicholas <span>Admin</span></div>
+    <div class="sb-label">Catalog</div>
+    <ul class="sb-nav">
+      <li><a href="#" class="active"><span class="sb-icon">C</span> Compositions <span class="sb-count">24</span></a></li>
+      <li><a href="#"><span class="sb-icon">A</span> Assets <span class="sb-count">89</span></a></li>
+      <li><a href="#"><span class="sb-icon">T</span> Tags <span class="sb-count">47</span></a></li>
+      <li><a href="#"><span class="sb-icon">L</span> Licenses</a></li>
+    </ul>
+    <div class="sb-label">Business</div>
+    <ul class="sb-nav">
+      <li><a href="#"><span class="sb-icon">$</span> Commissions <span class="sb-count">3</span></a></li>
+      <li><a href="#"><span class="sb-icon">O</span> Orders</a></li>
+      <li><a href="#"><span class="sb-icon">P</span> Performances <span class="sb-count">12</span></a></li>
+    </ul>
+    <div class="sb-label">Data</div>
+    <ul class="sb-nav">
+      <li><a href="#"><span class="sb-icon">E</span> Export / Import</a></li>
+      <li><a href="#"><span class="sb-icon">F</span> File browser</a></li>
+    </ul>
+    <div class="sb-label">Site</div>
+    <ul class="sb-nav">
+      <li><a href="#"><span class="sb-icon">W</span> View public site</a></li>
+      <li><a href="#"><span class="sb-icon">S</span> Settings</a></li>
+    </ul>
+    <div class="sb-footer"><a href="#">Sign out</a></div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">Compositions</span>
+        <span class="topbar-badge">24 works</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="switchView(this)">Dashboard</button>
+          <button class="view-btn" onclick="switchView(this)">Spreadsheet</button>
+          <button class="view-btn" onclick="switchView(this)">JSON</button>
+        </div>
+        <button class="btn">Export CSV</button>
+        <button class="btn btn-primary">+ New composition</button>
+      </div>
+    </div>
+
+    <div class="split-layout">
+      <!-- Left: Catalog -->
+      <div class="catalog-panel">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total works</div><div class="stat-val">24</div><div class="stat-sub">6 published this year</div></div>
+          <div class="stat-card"><div class="stat-label">Assets managed</div><div class="stat-val">89</div><div class="stat-sub">12 need updates</div></div>
+          <div class="stat-card"><div class="stat-label">Active commissions</div><div class="stat-val">3</div><div class="stat-sub">$14,500 total</div></div>
+          <div class="stat-card"><div class="stat-label">Performances</div><div class="stat-val">12</div><div class="stat-sub">4 upcoming</div></div>
+        </div>
+
+        <div class="toolbar-row">
+          <input type="text" class="search-input" placeholder="Search compositions..." />
+          <select class="filter-select"><option>All statuses</option><option>Published</option><option>Draft</option><option>In progress</option></select>
+          <select class="filter-select"><option>All years</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option></select>
+          <select class="filter-select"><option>All instrumentation</option><option>Solo</option><option>Chamber</option><option>Orchestra</option></select>
+        </div>
+
+        <div class="catalog-table">
+          <table class="ct">
+            <thead><tr>
+              <th style="width:20%">Title</th>
+              <th style="width:13%">Instr.</th>
+              <th style="width:6%">Year</th>
+              <th style="width:8%">Status</th>
+              <th style="width:14%">Assets</th>
+              <th style="min-width:25%">Program note</th>
+              <th style="width:8%">Tags</th>
+            </tr></thead>
+            <tbody id="compTable"></tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="comm-section-title">
+            Recent commissions
+            <button class="btn btn-sm">View all</button>
+          </div>
+          <div id="commList"></div>
+        </div>
+      </div>
+
+      <!-- Right: AI Panel -->
+      <div class="ai-panel">
+        <div class="ai-header">
+          <div class="ai-dot"></div>
+          <span class="ai-title">Catalog assistant</span>
+          <span class="ai-model">Claude Sonnet 4</span>
+        </div>
+
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-msg assistant">
+            <span class="msg-label">Catalog assistant</span>
+            Hi Nick. I have access to all 24 compositions in your catalog. I can rewrite program notes, fill missing tags, standardize metadata, find incomplete entries, or help with any bulk edits. What would you like to do?
+          </div>
+
+          <div class="ai-msg user">
+            <span class="msg-label">You</span>
+            Rewrite all published program notes to be under 50 words, third person, suitable for a concert program. Keep the essential character of each piece.
+          </div>
+
+          <div class="ai-msg assistant">
+            <span class="msg-label">Catalog assistant</span>
+            I'll rewrite program notes for all 7 published compositions. Here are the proposed changes — review each and approve or reject.
+            <span class="scope-badge">Scope: 7 published compositions</span>
+
+            <div class="diff-block" id="diff1">
+              <div class="diff-header">meridian-lines.json — programNote</div>
+              <div class="diff-line del">- Meridian Lines traces the invisible boundaries that divide and connect — time zones, political borders, the liminal space between waking and sleep. Each of the three movements explores a different kind of threshold...</div>
+              <div class="diff-line add">+ A three-movement work tracing invisible boundaries between time zones, borders, and states of consciousness. Electronics gradually infiltrate the quartet's acoustic body across three thresholds.</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diff1')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diff1')">Reject</button>
+                <button class="btn btn-sm" onclick="editDiff('diff1')">Edit</button>
+              </div>
+            </div>
+
+            <div class="diff-block" id="diff2">
+              <div class="diff-header">tectonic-hymn.json — programNote</div>
+              <div class="diff-line del">- A geological meditation on the forces that shape continents, rendered as orchestral drama in four continuous movements that build from subterranean rumble to seismic release...</div>
+              <div class="diff-line add">+ An orchestral meditation on geological force, where tectonic pressure builds across four continuous sections from subterranean rumble to seismic release.</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diff2')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diff2')">Reject</button>
+                <button class="btn btn-sm" onclick="editDiff('diff2')">Edit</button>
+              </div>
+            </div>
+
+            <div class="diff-block" id="diff3">
+              <div class="diff-header">five-ghazals.json — programNote</div>
+              <div class="diff-line del">- Settings of five classical ghazals exploring longing and devotion across cultures, weaving Middle Eastern and Western timbres into an intimate tapestry of voice and strings...</div>
+              <div class="diff-line add">+ Five classical ghazals set for soprano, oud, and cello, weaving Middle Eastern and Western timbres into intimate explorations of longing and devotion.</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diff3')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diff3')">Reject</button>
+                <button class="btn btn-sm" onclick="editDiff('diff3')">Edit</button>
+              </div>
+            </div>
+
+            <div class="diff-block" id="diff4">
+              <div class="diff-header">glass-topography.json — programNote</div>
+              <div class="diff-line del">- An exploration of transparent textures and crystalline surfaces in a single unbroken arc for solo piano, where resonance itself becomes the subject...</div>
+              <div class="diff-line add">+ A single unbroken arc for solo piano exploring transparent textures and crystalline surfaces, where resonance itself becomes the musical subject.</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diff4')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diff4')">Reject</button>
+                <button class="btn btn-sm" onclick="editDiff('diff4')">Edit</button>
+              </div>
+            </div>
+
+            <div class="diff-block" id="diff5">
+              <div class="diff-header">nocturne-with-satellites.json — programNote</div>
+              <div class="diff-line del">- A nocturnal soundscape where violin harmonics orbit electronic drones like satellites circling a sleeping planet, gradually dissolving the boundary between instrument and machine...</div>
+              <div class="diff-line add">+ Violin harmonics orbit electronic drones in a nocturnal soundscape, gradually dissolving the boundary between acoustic instrument and machine.</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diff5')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diff5')">Reject</button>
+                <button class="btn btn-sm" onclick="editDiff('diff5')">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ai-msg user">
+            <span class="msg-label">You</span>
+            Now check all compositions and add missing difficulty tags. Use "Approachable" for solo works, "Intermediate" for chamber, "Advanced" for electronics or extended techniques.
+          </div>
+
+          <div class="ai-msg assistant">
+            <span class="msg-label">Catalog assistant</span>
+            Found 8 compositions missing difficulty tags. Proposed additions:
+
+            <div class="diff-block" id="diffBatch">
+              <div class="diff-header">Batch tag update — 8 files</div>
+              <div class="diff-line add">+ Glass Topography (solo piano) → Approachable</div>
+              <div class="diff-line add">+ Five Ghazals (sop, oud, vlc) → Intermediate</div>
+              <div class="diff-line add">+ Pulse Garden (perc ensemble) → Intermediate</div>
+              <div class="diff-line add">+ Nocturne with Satellites (vln + elec) → Advanced</div>
+              <div class="diff-line add">+ Threshold Music (str qt) → Intermediate</div>
+              <div class="diff-line add">+ Spectral Cartography (ens + elec) → Advanced</div>
+              <div class="diff-line add">+ Tectonic Hymn (orchestra) → Advanced</div>
+              <div class="diff-line add">+ Meridian Lines (str qt + elec) → Advanced</div>
+              <div class="diff-actions">
+                <button class="btn btn-sm btn-success" onclick="approveDiff('diffBatch')">Approve all 8</button>
+                <button class="btn btn-sm">Review individually</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDiff('diffBatch')">Reject all</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ai-msg applied">
+            <span class="msg-label">Applied</span>
+            8 difficulty tags written to content files. Run <code>astro build</code> to update the public site.
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-btn">Rewrite program notes</button>
+          <button class="quick-btn">Fill missing tags</button>
+          <button class="quick-btn">Standardize instrumentation</button>
+          <button class="quick-btn">Find incomplete entries</button>
+          <button class="quick-btn">Generate descriptions</button>
+          <button class="quick-btn">Suggest related works</button>
+        </div>
+
+        <div class="ai-input-area">
+          <textarea class="ai-input" placeholder="Ask Claude to edit your catalog..." rows="1" id="aiInput"></textarea>
+          <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var comps = [
+  {title:"Meridian Lines",inst:"str qt + elec",year:2024,status:"published",score:true,parts:true,audio:true,elec:true,tags:6,note:"A three-movement work tracing invisible boundaries between time zones, borders, and states of consciousness.",cls:"updated"},
+  {title:"Tectonic Hymn",inst:"orchestra",year:2023,status:"published",score:true,parts:true,audio:true,elec:false,tags:3,note:"An orchestral meditation on geological force, where tectonic pressure builds across four continuous sections.",cls:"updated"},
+  {title:"Five Ghazals",inst:"sop, oud, vlc",year:2023,status:"published",score:true,parts:true,audio:false,elec:false,tags:3,note:"Five classical ghazals set for soprano, oud, and cello, weaving Middle Eastern and Western timbres.",cls:"highlighted"},
+  {title:"Glass Topography",inst:"solo piano",year:2022,status:"published",score:true,parts:false,audio:true,elec:false,tags:2,note:"A single unbroken arc for solo piano exploring transparent textures and crystalline surfaces.",cls:"highlighted"},
+  {title:"Pulse Garden",inst:"perc ensemble",year:2022,status:"draft",score:true,parts:false,audio:false,elec:false,tags:3,note:"Interlocking rhythmic patterns that grow and evolve organically...",cls:""},
+  {title:"Nocturne with Satellites",inst:"vln + elec",year:2021,status:"published",score:true,parts:false,audio:true,elec:true,tags:3,note:"Violin harmonics orbit electronic drones in a nocturnal soundscape...",cls:""},
+  {title:"Threshold Music",inst:"str qt",year:2020,status:"published",score:true,parts:true,audio:true,elec:false,tags:3,note:"Music that inhabits the spaces between states of being...",cls:""},
+  {title:"Spectral Cartography",inst:"ens + elec",year:2019,status:"draft",score:true,parts:false,audio:false,elec:true,tags:2,note:"Mapping the hidden frequency relationships within acoustic ensembles...",cls:""},
+  {title:"Meridian Lines (sextet)",inst:"str sxt + elec",year:2025,status:"wip",score:false,parts:false,audio:false,elec:false,tags:1,note:"",cls:""},
+  {title:"Unnamed Commission",inst:"wind quintet",year:2025,status:"wip",score:false,parts:false,audio:false,elec:false,tags:0,note:"",cls:""}
+];
+
+var statusMap = {published:{cls:"status-published",label:"Published"},draft:{cls:"status-draft",label:"Draft"},wip:{cls:"status-wip",label:"In progress"}};
+
+var tb = document.getElementById('compTable');
+tb.innerHTML = comps.map(function(c) {
+  var s = statusMap[c.status];
+  var ap = '<div class="asset-pills">'
+    + '<span class="asset-pill ' + (c.score?'has':'missing') + '">Score</span>'
+    + '<span class="asset-pill ' + (c.parts?'has':'missing') + '">Parts</span>'
+    + '<span class="asset-pill ' + (c.audio?'has':'missing') + '">Audio</span>'
+    + (c.elec !== undefined ? '<span class="asset-pill ' + (c.elec?'has':'missing') + '">Elec</span>' : '')
+    + '</div>';
+  var noteText = c.note || '<span style="color:var(--text-light);font-style:italic">No note yet</span>';
+  return '<tr class="' + c.cls + '">'
+    + '<td class="title-cell">' + c.title + '</td>'
+    + '<td class="mono">' + c.inst + '</td>'
+    + '<td class="mono">' + c.year + '</td>'
+    + '<td><span class="status-badge ' + s.cls + '">' + s.label + '</span></td>'
+    + '<td>' + ap + '</td>'
+    + '<td class="note-cell">' + noteText + '</td>'
+    + '<td class="mono">' + c.tags + ' tags</td>'
+    + '</tr>';
+}).join('');
+
+var commissions = [
+  {title:"Wind Quintet for Latitude Festival",client:"Latitude Festival Commission",detail:"5 mvts, 20 min — Premiere Jul 2025",status:"active",date:"Jan 15, 2025",amount:"$8,000"},
+  {title:"Solo cello meditation",client:"Sarah Kim (private)",detail:"~6 min — flexible timeline",status:"inquiry",date:"Mar 10, 2025",amount:"$2,500"},
+  {title:"String orchestra arrangement",client:"Brooklyn Youth Orchestra",detail:"Arr. of Threshold Music — 12 min",status:"active",date:"Feb 28, 2025",amount:"$4,000"}
+];
+
+document.getElementById('commList').innerHTML = commissions.map(function(c) {
+  var statusBg = c.status === 'active' ? 'background:var(--amber-bg);color:var(--amber-text)' : 'background:var(--blue-bg);color:var(--blue-text)';
+  return '<div class="commission-card">'
+    + '<div class="comm-bar ' + c.status + '"></div>'
+    + '<div class="comm-body"><div class="comm-title">' + c.title + '</div><div class="comm-detail">' + c.client + '<br>' + c.detail + '</div></div>'
+    + '<div class="comm-right"><span class="comm-date">' + c.date + '</span><span class="comm-amount">' + c.amount + '</span><span class="status-badge" style="' + statusBg + '">' + c.status.charAt(0).toUpperCase() + c.status.slice(1) + '</span></div>'
+    + '</div>';
+}).join('');
+
+function approveDiff(id) {
+  var block = document.getElementById(id);
+  block.classList.add('approved');
+  var btn = block.querySelector('.btn-success');
+  btn.textContent = 'Approved';
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  btn.style.background = 'var(--green-bg)';
+}
+
+function rejectDiff(id) {
+  var block = document.getElementById(id);
+  block.style.opacity = '0.4';
+  block.style.pointerEvents = 'none';
+}
+
+function editDiff(id) {
+  var block = document.getElementById(id);
+  var addLine = block.querySelector('.diff-line.add');
+  if (addLine) {
+    addLine.contentEditable = true;
+    addLine.focus();
+    addLine.style.outline = '2px solid var(--gold)';
+    addLine.style.outlineOffset = '-2px';
+  }
+}
+
+function switchView(btn) {
+  document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+function sendMessage() {
+  var input = document.getElementById('aiInput');
+  var text = input.value.trim();
+  if (!text) return;
+  var msgs = document.getElementById('aiMessages');
+  var userMsg = document.createElement('div');
+  userMsg.className = 'ai-msg user';
+  userMsg.innerHTML = '<span class="msg-label">You</span>' + text;
+  msgs.appendChild(userMsg);
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(function() {
+    var aiMsg = document.createElement('div');
+    aiMsg.className = 'ai-msg assistant';
+    aiMsg.innerHTML = '<span class="msg-label">Catalog assistant</span>Scanning your catalog for relevant compositions... I\'ll prepare the changes and show you a diff for review.';
+    msgs.appendChild(aiMsg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 800);
+}
+
+document.getElementById('aiInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+</script>
+</body>
+</html>

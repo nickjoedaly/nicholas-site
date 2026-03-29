@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicholas — Composer & Researcher</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1b2e;
+  --navy-mid: #1a2d4a;
+  --navy-light: #243b5c;
+  --cream: #f5f0e8;
+  --cream-dark: #e8e0d2;
+  --cream-mid: #ece5d8;
+  --gold: #c8963e;
+  --gold-light: #d4a854;
+  --gold-muted: #a07830;
+  --gold-pale: #f0e6d0;
+  --text-dark: #1a1a18;
+  --text-mid: #5a5650;
+  --text-light: #8a8580;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-dark);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav ── */
+.nav {
+  background: var(--navy);
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  font-family: 'Source Serif 4', serif;
+  color: var(--cream);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream-dark);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* ── Header motif ── */
+.hm {
+  background: var(--navy);
+  overflow: hidden;
+  height: 16px;
+  position: relative;
+}
+.hm svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+/* ── Hero ── */
+.hero {
+  background: var(--navy);
+  padding: 4rem 2.5rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--gold);
+}
+.hero-wm {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.02;
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero-left h1 {
+  font-family: 'Source Serif 4', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+.hero-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.hero-desc {
+  font-family: 'Source Serif 4', serif;
+  font-size: 17px;
+  color: var(--cream-dark);
+  opacity: 0.55;
+  line-height: 1.65;
+  max-width: 400px;
+}
+
+/* ── Featured card ── */
+.featured-card {
+  background: rgba(245,240,232,0.06);
+  border: 1px solid rgba(245,240,232,0.1);
+  border-radius: 10px;
+  padding: 22px;
+  transition: border-color 0.3s;
+  cursor: pointer;
+}
+.featured-card:hover { border-color: var(--gold); }
+.fc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+.fc-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+.fc-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--cream-dark);
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+.fc-audio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.fc-play {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.fc-play:hover { background: var(--cream); }
+.fc-play:hover .fc-tri { border-left-color: var(--navy); }
+.fc-tri {
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 9px solid var(--cream);
+  margin-left: 2px;
+}
+.fc-wave {
+  flex: 1;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 1.5px;
+}
+.fc-bar {
+  width: 2px;
+  border-radius: 1px;
+  background: var(--cream);
+  opacity: 0.25;
+  transition: opacity 0.15s;
+}
+.featured-card:hover .fc-bar { opacity: 0.4; }
+.fc-dur {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--cream-dark);
+  opacity: 0.5;
+}
+.fc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.fc-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  background: rgba(245,240,232,0.08);
+  color: var(--cream-dark);
+  opacity: 0.5;
+}
+.fc-arrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  opacity: 0;
+  margin-top: 14px;
+  display: block;
+  transition: opacity 0.3s;
+}
+.featured-card:hover .fc-arrow { opacity: 0.8; }
+
+/* ── Worlds / Bento ── */
+.worlds {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 1rem;
+}
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+.b-card {
+  background: white;
+  border: 1px solid var(--cream-dark);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.b-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+.b-card:hover .b-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.b-arrow {
+  position: absolute;
+  top: 18px; right: 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  color: var(--gold);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.25s;
+}
+.b-pad { padding: 1.5rem; }
+.b-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+.b-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.b-desc {
+  font-family: 'Source Serif 4', serif;
+  font-size: 13.5px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.b-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-light);
+  margin-top: 12px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Catalog card ── */
+.b-catalog {
+  grid-column: span 8;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--cream-dark);
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+.b-catalog:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+.b-catalog:hover .b-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.b-catalog-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.mini-score {
+  border-left: 1px solid var(--cream-mid);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+.mini-score-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: var(--text-light);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+.mini-staff {
+  width: 100%;
+  height: 34px;
+  position: relative;
+}
+.ms-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: var(--text-light);
+  opacity: 0.15;
+}
+.ms-note {
+  position: absolute;
+  width: 8px; height: 6px;
+  border-radius: 50%;
+  background: var(--navy);
+  opacity: 0.2;
+  transform: rotate(-15deg);
+}
+
+/* ── Bestiary ── */
+.b-bestiary {
+  grid-column: span 4;
+  min-height: 210px;
+  position: relative;
+}
+.bestiary-bg {
+  position: absolute;
+  bottom: -10px; right: -10px;
+  width: 170px; height: 170px;
+  opacity: 0.06;
+  transition: opacity 0.3s;
+}
+.b-bestiary:hover .bestiary-bg { opacity: 0.1; }
+.bestiary-bg svg { width: 100%; height: 100%; }
+
+/* ── Software ── */
+.b-software {
+  grid-column: span 5;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+}
+.b-software-info { padding: 1.5rem; flex: 1; }
+.b-software-visual {
+  width: 170px;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px;
+  flex-shrink: 0;
+}
+.code-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  color: var(--cream);
+  opacity: 0.4;
+  line-height: 1.9;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.code-line span { color: var(--gold); opacity: 0.7; }
+
+/* ── Scholarly ── */
+.b-scholarly { grid-column: span 4; }
+
+/* ── Writings ── */
+.b-writings { grid-column: span 3; }
+
+/* ── About ── */
+.b-about { grid-column: span 3; }
+.b-about-inner {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.avatar-ring {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--cream-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Source Serif 4', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--navy-light);
+  transition: border-color 0.3s;
+}
+.b-about:hover .avatar-ring { border-color: var(--gold); }
+
+/* ── Commission ── */
+.commission-strip {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.5rem 2rem 1.5rem;
+}
+.comm-card {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+.comm-card:hover { border-color: var(--gold); }
+.comm-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.comm-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+.comm-card:hover .comm-icon { background: rgba(200,150,62,0.15); }
+.comm-icon-inner {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.comm-text-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--cream);
+}
+.comm-text-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--cream-dark);
+  opacity: 0.4;
+  margin-top: 2px;
+}
+.comm-arrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  color: var(--gold);
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.comm-card:hover .comm-arrow { opacity: 1; }
+
+/* ── Contact ── */
+.contact-strip {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.5rem 2rem 3rem;
+}
+.contact-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+.contact-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-light);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
+}
+.contact-link:hover { color: var(--gold-muted); }
+.csep { color: var(--cream-dark); font-size: 11px; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .hero-left h1 { font-size: 38px; }
+  .bento { grid-template-columns: 1fr; }
+  .b-catalog { grid-column: span 1; grid-template-columns: 1fr; }
+  .b-bestiary, .b-software, .b-scholarly, .b-writings, .b-about { grid-column: span 1; }
+  .b-software { flex-direction: column; }
+  .b-software-visual { width: 100%; height: 120px; }
+  .mini-score { display: none; }
+  .nav { padding: 0 1.5rem; }
+  .hero { padding: 2.5rem 1.5rem 2rem; }
+  .worlds { padding: 1.5rem 1rem; }
+  .commission-strip, .contact-strip { padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Nicholas <span>Composer</span></div>
+  <ul class="nav-links">
+    <li><a href="#">works</a></li>
+    <li><a href="#">research</a></li>
+    <li><a href="#">projects</a></li>
+    <li><a href="#">about</a></li>
+    <li><a href="#">contact</a></li>
+  </ul>
+</nav>
+
+<div class="hm">
+  <svg viewBox="0 0 1400 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="3" x2="1400" y2="3" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="6" x2="1400" y2="6" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="9" x2="1400" y2="9" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="12" x2="1400" y2="12" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="15" x2="1400" y2="15" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <ellipse cx="150" cy="9" rx="3" ry="2.2" fill="#c8963e" opacity="0.12"/>
+    <line x1="153" y1="9" x2="153" y2="2" stroke="#c8963e" stroke-width="0.5" opacity="0.12"/>
+    <ellipse cx="500" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/>
+    <ellipse cx="900" cy="12" rx="3" ry="2.2" fill="#c8963e" opacity="0.1"/>
+    <line x1="903" y1="12" x2="903" y2="5" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/>
+    <ellipse cx="1250" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.08"/>
+  </svg>
+</div>
+
+<div class="hero">
+  <div class="hero-wm">
+    <svg width="900" height="100" viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="900" y2="30" stroke="#f5f0e8" stroke-width="0.8"/>
+      <line x1="0" y1="40" x2="900" y2="40" stroke="#f5f0e8" stroke-width="0.8"/>
+      <line x1="0" y1="50" x2="900" y2="50" stroke="#f5f0e8" stroke-width="0.8"/>
+      <line x1="0" y1="60" x2="900" y2="60" stroke="#f5f0e8" stroke-width="0.8"/>
+      <line x1="0" y1="70" x2="900" y2="70" stroke="#f5f0e8" stroke-width="0.8"/>
+      <ellipse cx="120" cy="50" rx="6" ry="4.5" fill="#f5f0e8" transform="rotate(-15,120,50)"/>
+      <line x1="126" y1="50" x2="126" y2="28" stroke="#f5f0e8" stroke-width="1"/>
+      <ellipse cx="250" cy="40" rx="6" ry="4.5" fill="none" stroke="#f5f0e8" stroke-width="1" transform="rotate(-15,250,40)"/>
+      <ellipse cx="400" cy="60" rx="6" ry="4.5" fill="#f5f0e8" transform="rotate(-15,400,60)"/>
+      <line x1="393" y1="60" x2="393" y2="80" stroke="#f5f0e8" stroke-width="1"/>
+      <ellipse cx="560" cy="40" rx="6" ry="4.5" fill="#f5f0e8" transform="rotate(-15,560,40)"/>
+      <line x1="566" y1="40" x2="566" y2="20" stroke="#f5f0e8" stroke-width="1"/>
+      <ellipse cx="700" cy="50" rx="6" ry="4.5" fill="none" stroke="#f5f0e8" stroke-width="1" transform="rotate(-15,700,50)"/>
+      <ellipse cx="820" cy="60" rx="6" ry="4.5" fill="#f5f0e8" transform="rotate(-15,820,60)"/>
+      <line x1="813" y1="60" x2="813" y2="82" stroke="#f5f0e8" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1>Nicholas</h1>
+      <div class="hero-role">Composer & Researcher</div>
+      <p class="hero-desc">Music that crosses borders. Software that opens possibilities. Research that asks why. Games that spark creation.</p>
+    </div>
+    <div class="hero-right">
+      <div class="featured-card">
+        <div class="fc-label">Latest work</div>
+        <div class="fc-title">Meridian Lines</div>
+        <div class="fc-sub">for string quartet and electronics (2024)</div>
+        <div class="fc-audio">
+          <div class="fc-play"><div class="fc-tri"></div></div>
+          <div class="fc-wave" id="heroWave"></div>
+          <span class="fc-dur">14:30</span>
+        </div>
+        <div class="fc-tags">
+          <span class="fc-tag">Reflective</span>
+          <span class="fc-tag">Sonorous</span>
+          <span class="fc-tag">Modal</span>
+          <span class="fc-tag">Electronics</span>
+        </div>
+        <span class="fc-arrow">Explore this work &rarr;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="worlds">
+  <div class="bento">
+
+    <div class="b-catalog">
+      <div class="b-catalog-info">
+        <div class="b-label">24 works</div>
+        <div class="b-title">Compositions</div>
+        <div class="b-desc">Scores, audio, and video for solo, chamber, orchestral, and electronic works. Browse by character, technique, or instrumentation.</div>
+        <div class="b-meta">Browse the full catalog &rarr;</div>
+      </div>
+      <div class="mini-score">
+        <div class="mini-score-label">Tectonic Hymn</div>
+        <div class="mini-staff" id="ms1"></div>
+      </div>
+      <div class="mini-score">
+        <div class="mini-score-label">Five Ghazals</div>
+        <div class="mini-staff" id="ms2"></div>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+    <div class="b-card b-bestiary">
+      <div class="b-pad">
+        <div class="b-label">Game / creative tool</div>
+        <div class="b-title">Compositional Bestiary</div>
+        <div class="b-desc">A deck of creatures, each one a compositional constraint. Draw a card. Write the music it demands.</div>
+        <div class="b-meta">Play, download, learn more</div>
+      </div>
+      <div class="bestiary-bg">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="100" height="140" rx="8" stroke="#1a2d4a" stroke-width="2" fill="none"/>
+          <rect x="20" y="20" width="80" height="80" rx="4" stroke="#1a2d4a" stroke-width="1" fill="none"/>
+          <circle cx="60" cy="55" r="18" stroke="#1a2d4a" stroke-width="1" fill="none"/>
+          <path d="M50,48 Q60,38 70,48" fill="none" stroke="#1a2d4a" stroke-width="1"/>
+          <circle cx="54" cy="52" r="2" fill="#1a2d4a"/>
+          <circle cx="66" cy="52" r="2" fill="#1a2d4a"/>
+          <path d="M55,60 Q60,65 65,60" fill="none" stroke="#1a2d4a" stroke-width="1"/>
+          <line x1="25" y1="110" x2="95" y2="110" stroke="#1a2d4a" stroke-width="0.8"/>
+          <line x1="25" y1="118" x2="80" y2="118" stroke="#1a2d4a" stroke-width="0.8"/>
+          <line x1="25" y1="126" x2="70" y2="126" stroke="#1a2d4a" stroke-width="0.8"/>
+          <rect x="50" y="30" width="90" height="120" rx="8" stroke="#1a2d4a" stroke-width="1.5" fill="none" transform="rotate(8,95,90)"/>
+        </svg>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+    <div class="b-card b-software">
+      <div class="b-software-info">
+        <div class="b-label">Open source</div>
+        <div class="b-title">Software & Plugins</div>
+        <div class="b-desc">MuseScore plugins and compositional tools. Notation utilities, analysis helpers, creative workflow extensions.</div>
+        <div class="b-meta">View on GitHub</div>
+      </div>
+      <div class="b-software-visual">
+        <div class="code-line"><span>import</span> { Score } from</div>
+        <div class="code-line">&nbsp; <span>'musescore'</span>;</div>
+        <div class="code-line">&nbsp;</div>
+        <div class="code-line"><span>function</span> analyze(</div>
+        <div class="code-line">&nbsp; score: Score</div>
+        <div class="code-line">) {</div>
+        <div class="code-line">&nbsp; <span>const</span> voices =</div>
+        <div class="code-line">&nbsp;&nbsp;&nbsp; score.<span>parts</span>();</div>
+        <div class="code-line">&nbsp; <span>return</span> voices</div>
+        <div class="code-line">&nbsp;&nbsp;&nbsp; .map(harmonize);</div>
+        <div class="code-line">}</div>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+    <div class="b-card b-scholarly">
+      <div class="b-pad">
+        <div class="b-label">Research</div>
+        <div class="b-title">Scholarly Work</div>
+        <div class="b-desc">PhD thesis, publications, and conference papers exploring the intersections of composition, technology, and pedagogy.</div>
+        <div class="b-meta">Publications, thesis, talks</div>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+    <div class="b-card b-writings">
+      <div class="b-pad">
+        <div class="b-label">Blog & essays</div>
+        <div class="b-title">Writings</div>
+        <div class="b-desc">On music, creativity, process, and the things between.</div>
+        <div class="b-meta">Essays, notes, reflections</div>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+    <div class="b-card b-about">
+      <div class="b-pad">
+        <div class="b-about-inner">
+          <div class="avatar-ring">N</div>
+          <div>
+            <div class="b-title" style="font-size:17px; margin-bottom:4px;">About</div>
+            <div class="b-desc" style="font-size:12px;">Bio, artistic statement, CV, and contact.</div>
+          </div>
+        </div>
+      </div>
+      <span class="b-arrow">&rarr;</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="commission-strip">
+  <div class="comm-card">
+    <div class="comm-left">
+      <div class="comm-icon"><div class="comm-icon-inner"></div></div>
+      <div>
+        <div class="comm-text-title">Commission a new work</div>
+        <div class="comm-text-sub">Ensembles, festivals, individuals — let's make something together</div>
+      </div>
+    </div>
+    <span class="comm-arrow">&rarr;</span>
+  </div>
+</div>
+
+<div class="contact-strip">
+  <div class="contact-inner">
+    <a class="contact-link" href="#">email</a><span class="csep">/</span>
+    <a class="contact-link" href="#">instagram</a><span class="csep">/</span>
+    <a class="contact-link" href="#">youtube</a><span class="csep">/</span>
+    <a class="contact-link" href="#">github</a><span class="csep">/</span>
+    <a class="contact-link" href="#">soundcloud</a>
+  </div>
+</div>
+
+<script>
+// Hero waveform
+var hw = document.getElementById('heroWave');
+for (var i = 0; i < 60; i++) {
+  var h = Math.round(3 + Math.random() * 20);
+  var bar = document.createElement('div');
+  bar.className = 'fc-bar';
+  bar.style.height = h + 'px';
+  hw.appendChild(bar);
+}
+
+// Mini staff notation
+function makeStaff(id, seed) {
+  var el = document.getElementById(id);
+  var noteData = [
+    [{x:12,y:5},{x:28,y:15},{x:44,y:9},{x:60,y:20},{x:76,y:7},{x:90,y:17}],
+    [{x:10,y:12},{x:25,y:4},{x:42,y:18},{x:58,y:8},{x:74,y:22},{x:88,y:10}]
+  ];
+  var notes = noteData[seed] || noteData[0];
+  for (var i = 0; i < 5; i++) {
+    var line = document.createElement('div');
+    line.className = 'ms-line';
+    line.style.top = (4 + i * 6) + 'px';
+    el.appendChild(line);
+  }
+  notes.forEach(function(n) {
+    var note = document.createElement('div');
+    note.className = 'ms-note';
+    note.style.left = n.x + '%';
+    note.style.top = n.y + 'px';
+    el.appendChild(note);
+  });
+}
+makeStaff('ms1', 0);
+makeStaff('ms2', 1);
+</script>
+</body>
+</html>

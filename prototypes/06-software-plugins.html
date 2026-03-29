@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software & Plugins — Nicholas Composer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0e1b2e;--navy-mid:#1a2d4a;--navy-light:#243b5c;--cream:#f5f0e8;--cream-dark:#e8e0d2;--cream-mid:#ece5d8;--gold:#c8963e;--gold-light:#d4a854;--gold-muted:#a07830;--gold-pale:#f0e6d0;--text-dark:#1a1a18;--text-mid:#5a5650;--text-light:#8a8580;--tag-bg:#eae5dc;--tag-color:#5a5650;--green-bg:#e8f5ee;--green-text:#2a7a5a;--blue-bg:#e8f0f8;--blue-text:#2a5a8a;--amber-bg:#faf0e6;--amber-text:#a07830;--purple-bg:#f0eaf5;--purple-text:#6b4c8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--cream);-webkit-font-smoothing:antialiased}
+
+.nav{background:var(--navy);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:'Source Serif 4',serif;color:var(--cream);font-size:20px;font-weight:600;text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream-dark);text-decoration:none;opacity:0.6;transition:opacity 0.2s}
+.nav-links a:hover{opacity:1}
+.nav-links a.active{opacity:1;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:2px}
+.hm{background:var(--navy);overflow:hidden;height:16px;position:relative}
+.hm svg{position:absolute;top:0;left:0;width:100%;height:100%}
+
+.hero{background:var(--navy);padding:2.5rem 2.5rem 3rem;border-bottom:2px solid var(--gold);position:relative;overflow:hidden}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;position:relative;z-index:1}
+.hero h1{font-family:'Source Serif 4',serif;font-size:36px;font-weight:300;color:var(--cream);letter-spacing:-0.01em;margin-bottom:8px}
+.hero-desc{font-family:'Source Serif 4',serif;font-size:16px;color:var(--cream-dark);opacity:0.6;line-height:1.65;max-width:520px;margin-bottom:16px}
+.hero-stats{display:flex;gap:24px}
+.hero-stat{display:flex;flex-direction:column;gap:2px}
+.hero-stat-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--cream)}
+.hero-stat-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--cream-dark);opacity:0.4}
+.hero-gh{display:flex;align-items:center;gap:10px;padding:12px 20px;background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.12);border-radius:8px;text-decoration:none;transition:border-color 0.2s}
+.hero-gh:hover{border-color:var(--gold)}
+.hero-gh-icon{width:32px;height:32px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hero-gh-icon svg{width:18px;height:18px}
+.hero-gh-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--cream);opacity:0.7}
+.hero-gh-user{font-family:'DM Mono',monospace;font-size:13px;color:var(--cream);font-weight:500}
+
+.content{max-width:1100px;margin:0 auto;padding:2.5rem 2rem}
+.section{margin-bottom:3rem}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.25rem;border-bottom:1px solid var(--cream-dark);padding-bottom:8px}
+.section-title{font-family:'Source Serif 4',serif;font-size:22px;font-weight:600}
+.section-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light)}
+
+/* Filter tabs */
+.filter-tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.filter-tab{padding:6px 16px;border:1px solid var(--cream-dark);border-radius:20px;background:white;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-mid);cursor:pointer;transition:all 0.15s}
+.filter-tab:hover{border-color:var(--gold);color:var(--gold-muted)}
+.filter-tab.active{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+
+/* Plugin cards */
+.plugin-card{background:white;border:1px solid var(--cream-dark);border-radius:10px;overflow:hidden;margin-bottom:16px;transition:border-color 0.2s}
+.plugin-card:hover{border-color:var(--gold)}
+.plugin-main{display:grid;grid-template-columns:1fr 340px;gap:0}
+.plugin-info{padding:24px}
+.plugin-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.plugin-icon{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:16px;font-weight:500}
+.plugin-titles{flex:1;min-width:0}
+.plugin-name{font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;margin-bottom:2px}
+.plugin-tagline{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-mid)}
+.plugin-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border-radius:3px}
+.badge-free{background:var(--green-bg);color:var(--green-text)}
+.badge-paid{background:var(--gold-pale);color:var(--gold-muted)}
+.badge-platform{background:var(--blue-bg);color:var(--blue-text)}
+.badge-beta{background:var(--amber-bg);color:var(--amber-text)}
+.badge-new{background:var(--purple-bg);color:var(--purple-text)}
+.plugin-desc{font-family:'Source Serif 4',serif;font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:16px}
+.plugin-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.feature-tag{font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:3px;background:var(--tag-bg);color:var(--tag-color)}
+.plugin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.plugin-btn{padding:8px 18px;border-radius:6px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;transition:all 0.15s;border:1px solid var(--cream-dark);background:white;color:var(--text-mid);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.plugin-btn:hover{border-color:var(--gold);color:var(--gold-muted)}
+.plugin-btn.primary{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+.plugin-btn.primary:hover{background:var(--gold-light)}
+.plugin-screenshot{border-left:1px solid var(--cream-mid);display:flex;align-items:center;justify-content:center;padding:16px;background:var(--cream);position:relative;overflow:hidden;min-height:240px}
+.plugin-screenshot svg{width:100%;height:100%;max-height:220px}
+
+/* Expandable sections */
+.expand-section{border-top:1px solid var(--cream-mid)}
+.expand-header{display:flex;align-items:center;gap:10px;padding:12px 24px;cursor:pointer;transition:background 0.15s}
+.expand-header:hover{background:rgba(200,150,62,0.03)}
+.expand-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;flex:1}
+.expand-toggle{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);transition:transform 0.2s}
+.expand-section.open .expand-toggle{transform:rotate(45deg)}
+.expand-body{display:none;padding:0 24px 20px}
+.expand-section.open .expand-body{display:block}
+
+/* Install steps */
+.install-steps{counter-reset:step}
+.install-step{display:flex;gap:12px;margin-bottom:10px}
+.install-step::before{counter-increment:step;content:counter(step);font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-muted);background:var(--gold-pale);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.install-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-mid);line-height:1.5}
+.install-text code{font-family:'DM Mono',monospace;font-size:11px;background:var(--cream);padding:1px 6px;border-radius:3px;color:var(--navy)}
+
+/* Changelog */
+.changelog-item{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--cream-mid)}
+.changelog-item:last-child{border-bottom:none}
+.cl-version{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--text-dark);min-width:50px;flex-shrink:0}
+.cl-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);min-width:80px;flex-shrink:0}
+.cl-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-mid);line-height:1.5}
+
+/* Web tools section */
+.web-tool-card{background:white;border:1px solid var(--cream-dark);border-radius:10px;overflow:hidden;transition:border-color 0.2s;margin-bottom:16px}
+.web-tool-card:hover{border-color:var(--gold)}
+.web-tool-inner{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.web-tool-info{padding:24px}
+.web-tool-preview{background:var(--navy);display:flex;align-items:center;justify-content:center;padding:20px;min-height:200px}
+
+.page-footer{max-width:1100px;margin:0 auto;padding:2rem;text-align:center}
+.footer-links{display:flex;justify-content:center;gap:2rem}
+.footer-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light);text-decoration:none}
+.footer-link:hover{color:var(--gold-muted)}
+
+@media(max-width:900px){
+  .nav{padding:0 1.5rem}
+  .hero{padding:2rem 1.5rem}
+  .hero-inner{grid-template-columns:1fr}
+  .hero h1{font-size:28px}
+  .content{padding:1.5rem}
+  .plugin-main{grid-template-columns:1fr}
+  .plugin-screenshot{border-left:none;border-top:1px solid var(--cream-mid);min-height:180px}
+  .web-tool-inner{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">Nicholas <span>Composer</span></a>
+  <ul class="nav-links">
+    <li><a href="#">works</a></li>
+    <li><a href="#">catalog</a></li>
+    <li><a href="#" class="active">projects</a></li>
+    <li><a href="#">about</a></li>
+    <li><a href="#">contact</a></li>
+  </ul>
+</nav>
+
+<div class="hm"><svg viewBox="0 0 1400 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="3" x2="1400" y2="3" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="6" x2="1400" y2="6" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="9" x2="1400" y2="9" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="12" x2="1400" y2="12" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="15" x2="1400" y2="15" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><ellipse cx="150" cy="9" rx="3" ry="2.2" fill="#c8963e" opacity="0.12"/><line x1="153" y1="9" x2="153" y2="2" stroke="#c8963e" stroke-width="0.5" opacity="0.12"/><ellipse cx="500" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/><ellipse cx="900" cy="12" rx="3" ry="2.2" fill="#c8963e" opacity="0.1"/><line x1="903" y1="12" x2="903" y2="5" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/></svg></div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Software & Plugins</h1>
+      <p class="hero-desc">Tools for composers, built by a composer. MuseScore plugins, web-based utilities, and open-source projects that make notation, analysis, and creative workflows better.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-val">6</span><span class="hero-stat-label">Plugins</span></div>
+        <div class="hero-stat"><span class="hero-stat-val">2.4k</span><span class="hero-stat-label">Downloads</span></div>
+        <div class="hero-stat"><span class="hero-stat-val">4</span><span class="hero-stat-label">Open source</span></div>
+      </div>
+    </div>
+    <a class="hero-gh" href="#">
+      <div class="hero-gh-icon">
+        <svg viewBox="0 0 24 24" fill="var(--navy)"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </div>
+      <div>
+        <div class="hero-gh-user">nicholas-composer</div>
+        <div class="hero-gh-text">View all projects on GitHub</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">MuseScore plugins</span>
+      <span class="section-count">4 plugins</span>
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active">All</button>
+      <button class="filter-tab">Free</button>
+      <button class="filter-tab">Premium</button>
+      <button class="filter-tab">Analysis</button>
+      <button class="filter-tab">Notation</button>
+      <button class="filter-tab">Workflow</button>
+    </div>
+
+    <!-- Plugin 1: Composition Tutor (REAL) -->
+    <div class="plugin-card">
+      <div class="plugin-main">
+        <div class="plugin-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--gold-pale);color:var(--gold-muted)">Ct</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Composition Tutor</div>
+              <div class="plugin-tagline">Guided diagnostic tool for compositional problem-solving — identify what's wrong with a passage and discover how to fix it</div>
+              <div class="plugin-badges">
+                <span class="badge badge-free">Free</span>
+                <span class="badge badge-platform">MuseScore 4</span>
+                <span class="badge badge-new">v1.0</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">Select a passage that isn't working, then walk through a guided decision tree that helps you name the problem. Covers five domains — harmony, melody, texture, rhythm, and form — with branching questions that narrow from "something feels off" to a specific diagnostic. Each endpoint provides a reframing of the issue, concrete solution strategies, recommended reading from the literature (Adler, Piston, Rimsky-Korsakov), and a "Discuss with Claude AI" button that sends your full diagnostic context to Claude for deeper conversation.</div>
+          <div class="plugin-features">
+            <span class="feature-tag">Harmony diagnostics</span>
+            <span class="feature-tag">Melody analysis</span>
+            <span class="feature-tag">Texture / spacing</span>
+            <span class="feature-tag">Rhythm / pacing</span>
+            <span class="feature-tag">Form / proportion</span>
+            <span class="feature-tag">Claude AI integration</span>
+            <span class="feature-tag">Solution spaces</span>
+            <span class="feature-tag">Reading references</span>
+          </div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Download free</a>
+            <a class="plugin-btn" href="#">GitHub</a>
+            <a class="plugin-btn" href="#">Documentation</a>
+          </div>
+        </div>
+        <div class="plugin-screenshot">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="200" fill="#2b2b2b" rx="6" stroke="#444" stroke-width="0.5"/>
+            <rect x="0" y="0" width="300" height="22" fill="#3a3a3a" rx="6"/>
+            <rect x="0" y="16" width="300" height="6" fill="#3a3a3a"/>
+            <circle cx="12" cy="11" r="4" fill="#ff5f57"/><circle cx="24" cy="11" r="4" fill="#febc2e"/><circle cx="36" cy="11" r="4" fill="#28c840"/>
+            <text x="150" y="14" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="#aaa">Composition Tutor</text>
+            <text x="210" y="14" font-family="'DM Mono',monospace" font-size="5" fill="#888">No passage selected</text>
+
+            <rect x="12" y="30" width="3" height="12" rx="1" fill="#4a9eff"/>
+            <text x="20" y="38" font-family="'DM Sans',sans-serif" font-size="7" fill="#ddd" font-weight="600">DIAGNOSTIC REFRAMING</text>
+
+            <text x="14" y="52" font-family="'DM Sans',sans-serif" font-size="5.5" fill="#bbb">If your goal is to improve registral placement,</text>
+            <text x="14" y="59" font-family="'DM Sans',sans-serif" font-size="5.5" fill="#bbb">the issue may be tessitura mismatch.</text>
+
+            <rect x="12" y="68" width="3" height="12" rx="1" fill="#f0a030"/>
+            <text x="20" y="76" font-family="'DM Sans',sans-serif" font-size="7" fill="#ddd" font-weight="600">SOLUTION SPACES</text>
+
+            <circle cx="18" cy="88" r="2.5" fill="#4a9eff" opacity="0.7"/>
+            <text x="24" y="90" font-family="'DM Sans',sans-serif" font-size="5" fill="#bbb">Transpose — Move melody to appropriate register</text>
+            <circle cx="18" cy="98" r="2.5" fill="#4a9eff" opacity="0.7"/>
+            <text x="24" y="100" font-family="'DM Sans',sans-serif" font-size="5" fill="#bbb">Redistribute voices — Assign to suitable ranges</text>
+            <circle cx="18" cy="108" r="2.5" fill="#4a9eff" opacity="0.7"/>
+            <text x="24" y="110" font-family="'DM Sans',sans-serif" font-size="5" fill="#bbb">Consider instrumental limitations</text>
+            <circle cx="18" cy="118" r="2.5" fill="#4a9eff" opacity="0.7"/>
+            <text x="24" y="120" font-family="'DM Sans',sans-serif" font-size="5" fill="#bbb">Balance with accompaniment</text>
+
+            <rect x="12" y="130" width="3" height="12" rx="1" fill="#4a9eff"/>
+            <text x="20" y="138" font-family="'DM Sans',sans-serif" font-size="7" fill="#ddd" font-weight="600">LEARN MORE</text>
+
+            <rect x="14" y="144" width="272" height="16" rx="3" fill="#3a3a3a"/>
+            <text x="22" y="154" font-family="'DM Sans',sans-serif" font-size="5.5" fill="#ddd" font-weight="500">Chords in SATB Style</text>
+            <text x="22" y="161" font-family="'DM Mono',monospace" font-size="4.5" fill="#4a9eff">Open in browser</text>
+
+            <text x="14" y="174" font-family="'DM Sans',sans-serif" font-size="5.5" fill="#bbb">Recommended Reading</text>
+            <text x="14" y="182" font-family="'DM Mono',monospace" font-size="4.5" fill="#999">Adler, The Study of Orchestration</text>
+            <text x="14" y="189" font-family="'DM Mono',monospace" font-size="4.5" fill="#999">Piston, Orchestration</text>
+
+            <rect x="90" y="192" width="120" height="16" rx="4" fill="#7c5cff"/>
+            <text x="150" y="202" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="6" fill="white" font-weight="500">Discuss with Claude AI</text>
+          </svg>
+        </div>
+      </div>
+      <div class="expand-section" onclick="toggleExpand(this)">
+        <div class="expand-header">
+          <span class="expand-label">Installation & details</span>
+          <span class="expand-toggle">+</span>
+        </div>
+        <div class="expand-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Installation</div>
+              <div class="install-steps">
+                <div class="install-step"><div class="install-text">Download <code>CompositionTutor.qml</code> from GitHub or the button above</div></div>
+                <div class="install-step"><div class="install-text">Copy to your MuseScore 4 plugins folder: <code>~/Documents/MuseScore4/Plugins/</code></div></div>
+                <div class="install-step"><div class="install-text">In MuseScore, go to <code>Home > Plugins</code> and enable "Composition Tutor"</div></div>
+                <div class="install-step"><div class="install-text">Select a passage in your score, then run <code>Plugins > Composition Tutor</code></div></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Diagnostic coverage</div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:70px">Harmony</span><span class="cl-desc">Aimless progressions, voice leading, weak arrivals, predictability, harmonic rhythm</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:70px">Melody</span><span class="cl-desc">Contour, leaps, range, rhythmic interest, harmony fit</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:70px">Texture</span><span class="cl-desc">Density, spacing, registral conflicts, rhythmic balance</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:70px">Rhythm</span><span class="cl-desc">Momentum, pacing, meter clarity, predictability</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:70px">Form</span><span class="cl-desc">Proportion, transitions, structural balance</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugin 2 -->
+    <div class="plugin-card">
+      <div class="plugin-main">
+        <div class="plugin-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--green-bg);color:var(--green-text)">Or</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Orchestration Helper</div>
+              <div class="plugin-tagline">Range checking, doubling detection, and balance suggestions for orchestral scores</div>
+              <div class="plugin-badges">
+                <span class="badge badge-paid">$12</span>
+                <span class="badge badge-platform">MuseScore 4</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">Scans your orchestral score for common issues: out-of-range notes, unintended doublings, balance problems between sections, and spacing conflicts. Generates a report with highlighted issues and suggested fixes. Includes instrument range data for over 60 orchestral and band instruments.</div>
+          <div class="plugin-features">
+            <span class="feature-tag">Range validation</span>
+            <span class="feature-tag">Doubling detection</span>
+            <span class="feature-tag">Balance analysis</span>
+            <span class="feature-tag">60+ instruments</span>
+            <span class="feature-tag">Export report</span>
+          </div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Purchase — $12</a>
+            <a class="plugin-btn" href="#">Documentation</a>
+          </div>
+        </div>
+        <div class="plugin-screenshot">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="200" fill="white" rx="4" stroke="var(--cream-dark)" stroke-width="1"/>
+            <rect x="0" y="0" width="300" height="24" fill="var(--navy)" rx="4"/><rect x="0" y="20" width="300" height="4" fill="var(--navy)"/>
+            <circle cx="12" cy="12" r="4" fill="#ff5f57"/><circle cx="26" cy="12" r="4" fill="#febc2e"/><circle cx="40" cy="12" r="4" fill="#28c840"/>
+            <text x="150" y="15" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="var(--cream)" opacity="0.6">Orchestration Helper — Report</text>
+            <g transform="translate(16,34)">
+              <text x="0" y="10" font-family="'DM Mono',monospace" font-size="7" fill="var(--text-dark)" font-weight="500">Score analysis: Symphony No. 2</text>
+              <text x="0" y="22" font-family="'DM Mono',monospace" font-size="6" fill="var(--text-light)">3 issues found across 142 measures</text>
+              <rect x="0" y="30" width="268" height="28" rx="3" fill="#fce8e8" stroke="#e8c0c0" stroke-width="0.5"/>
+              <circle cx="12" cy="44" r="4" fill="#993030" opacity="0.7"/>
+              <text x="22" y="41" font-family="'DM Mono',monospace" font-size="6" fill="#993030" font-weight="500">Out of range</text>
+              <text x="22" y="51" font-family="'DM Mono',monospace" font-size="5.5" fill="#993030" opacity="0.7">m. 34: Piccolo — D3 below practical range (D4)</text>
+              <rect x="0" y="64" width="268" height="28" rx="3" fill="var(--amber-bg)" stroke="#e0d0b8" stroke-width="0.5"/>
+              <circle cx="12" cy="78" r="4" fill="var(--amber-text)" opacity="0.7"/>
+              <text x="22" y="75" font-family="'DM Mono',monospace" font-size="6" fill="var(--amber-text)" font-weight="500">Balance warning</text>
+              <text x="22" y="85" font-family="'DM Mono',monospace" font-size="5.5" fill="var(--amber-text)" opacity="0.7">mm. 67–72: Solo oboe masked by ff strings</text>
+              <rect x="0" y="98" width="268" height="28" rx="3" fill="var(--blue-bg)" stroke="#c0d0e0" stroke-width="0.5"/>
+              <circle cx="12" cy="112" r="4" fill="var(--blue-text)" opacity="0.7"/>
+              <text x="22" y="109" font-family="'DM Mono',monospace" font-size="6" fill="var(--blue-text)" font-weight="500">Doubling note</text>
+              <text x="22" y="119" font-family="'DM Mono',monospace" font-size="5.5" fill="var(--blue-text)" opacity="0.7">m. 89: Fl.1 and Ob.1 unison on A5 — intentional?</text>
+            </g>
+            <text x="150" y="176" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="var(--text-light)">Categorized issue report with measure references</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugin 3: Form Scaffold (REAL) -->
+    <div class="plugin-card">
+      <div class="plugin-main">
+        <div class="plugin-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--green-bg);color:var(--green-text)">Fs</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Form Scaffold</div>
+              <div class="plugin-tagline">Generate complete formal structures with labeled sections, rehearsal marks, tempo changes, and key signatures</div>
+              <div class="plugin-badges">
+                <span class="badge badge-free">Free</span>
+                <span class="badge badge-platform">MuseScore 4</span>
+                <span class="badge badge-new">v3.2</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">Choose from eight musical form types — Sonata, Rondo, Theme & Variations, Ternary/Minuet & Trio, Binary, Fugue, Concerto, and Song Form — and generate a complete structural scaffold directly into your score. Each form comes with historical presets (Classical Mozart, Romantic Beethoven, etc.), configurable measure counts per section, and optional tempo, time signature, and key changes at structural boundaries. Outputs rehearsal marks, staff text labels, and a form map summary. One-step undo removes the entire scaffold.</div>
+          <div class="plugin-features">
+            <span class="feature-tag">8 form types</span>
+            <span class="feature-tag">Historical presets</span>
+            <span class="feature-tag">Sonata form</span>
+            <span class="feature-tag">Rondo</span>
+            <span class="feature-tag">Fugue</span>
+            <span class="feature-tag">Theme & variations</span>
+            <span class="feature-tag">Tempo / key / time sig</span>
+            <span class="feature-tag">Rehearsal marks</span>
+            <span class="feature-tag">Form map output</span>
+          </div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Download free</a>
+            <a class="plugin-btn" href="#">GitHub</a>
+            <a class="plugin-btn" href="#">Documentation</a>
+          </div>
+        </div>
+        <div class="plugin-screenshot">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="200" fill="#2b2b2b" rx="6" stroke="#444" stroke-width="0.5"/>
+            <rect x="0" y="0" width="300" height="22" fill="#3a3a3a" rx="6"/>
+            <rect x="0" y="16" width="300" height="6" fill="#3a3a3a"/>
+            <circle cx="12" cy="11" r="4" fill="#ff5f57"/><circle cx="24" cy="11" r="4" fill="#febc2e"/><circle cx="36" cy="11" r="4" fill="#28c840"/>
+            <text x="150" y="14" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="#aaa">Form Scaffold v3</text>
+
+            <text x="14" y="36" font-family="'DM Sans',sans-serif" font-size="6" fill="#bbb" font-weight="600">Form:</text>
+            <rect x="40" y="28" width="80" height="14" rx="3" fill="#4a7aff" stroke="#5a8aff" stroke-width="0.5"/>
+            <text x="50" y="38" font-family="'DM Sans',sans-serif" font-size="7" fill="white" font-weight="500">Sonata</text>
+
+            <text x="130" y="36" font-family="'DM Sans',sans-serif" font-size="6" fill="#bbb" font-weight="600">Preset:</text>
+            <rect x="162" y="28" width="124" height="14" rx="3" fill="#3a3a3a" stroke="#555" stroke-width="0.5"/>
+            <text x="170" y="38" font-family="'DM Mono',monospace" font-size="5.5" fill="#ccc">Classical Sonata (Mozart)</text>
+
+            <rect x="44" y="44" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="52" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Rondo</text>
+            <rect x="44" y="57" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="65" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Theme & Variations</text>
+            <rect x="44" y="70" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="78" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Ternary / Minuet</text>
+            <rect x="44" y="83" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="91" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Binary</text>
+            <rect x="44" y="96" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="104" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Fugue</text>
+            <rect x="44" y="109" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="117" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Concerto (1st mvt)</text>
+            <rect x="44" y="122" width="66" height="11" rx="2" fill="#3a3a3a"/>
+            <text x="48" y="130" font-family="'DM Sans',sans-serif" font-size="5" fill="#999">Song Form</text>
+
+            <text x="130" y="52" font-family="'DM Sans',sans-serif" font-size="6" fill="#ddd" font-weight="600">Expo</text>
+            <g transform="translate(130,56)">
+              <text x="0" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#999">P:</text>
+              <rect x="12" y="0" width="20" height="12" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="17" y="9" font-family="'DM Mono',monospace" font-size="6" fill="#ccc">8</text>
+              <text x="38" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#999">TR:</text>
+              <rect x="52" y="0" width="20" height="12" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="57" y="9" font-family="'DM Mono',monospace" font-size="6" fill="#ccc">8</text>
+              <text x="78" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#999">S:</text>
+              <rect x="88" y="0" width="20" height="12" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="93" y="9" font-family="'DM Mono',monospace" font-size="6" fill="#ccc">8</text>
+              <text x="114" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#999">C:</text>
+              <rect x="124" y="0" width="20" height="12" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="129" y="9" font-family="'DM Mono',monospace" font-size="6" fill="#ccc">8</text>
+            </g>
+
+            <text x="130" y="82" font-family="'DM Sans',sans-serif" font-size="6" fill="#ddd" font-weight="600">Section Properties:</text>
+            <g transform="translate(130,86)">
+              <text x="0" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#aaa" font-weight="500">Section</text>
+              <text x="55" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#aaa" font-weight="500">Tempo</text>
+              <text x="90" y="8" font-family="'DM Mono',monospace" font-size="5" fill="#aaa" font-weight="500">Key</text>
+              <text x="0" y="20" font-family="'DM Mono',monospace" font-size="5" fill="#999">Exposition</text>
+              <rect x="55" y="13" width="24" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <rect x="84" y="13" width="60" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="0" y="32" font-family="'DM Mono',monospace" font-size="5" fill="#999">Development</text>
+              <rect x="55" y="25" width="24" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <rect x="84" y="25" width="60" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <text x="0" y="44" font-family="'DM Mono',monospace" font-size="5" fill="#999">Recapitulation</text>
+              <rect x="55" y="37" width="24" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+              <rect x="84" y="37" width="60" height="10" rx="2" fill="#3a3a3a" stroke="#555" stroke-width="0.3"/>
+            </g>
+
+            <text x="130" y="148" font-family="'DM Sans',sans-serif" font-size="6" fill="#ddd" font-weight="600">Options:</text>
+            <rect x="130" y="152" width="8" height="8" rx="1" fill="#4a7aff"/><text x="142" y="159" font-family="'DM Mono',monospace" font-size="5" fill="#bbb">Rehearsal marks</text>
+            <rect x="200" y="152" width="8" height="8" rx="1" fill="#4a7aff"/><text x="212" y="159" font-family="'DM Mono',monospace" font-size="5" fill="#bbb">Staff text</text>
+            <rect x="130" y="164" width="8" height="8" rx="1" fill="#4a7aff"/><text x="142" y="171" font-family="'DM Mono',monospace" font-size="5" fill="#bbb">Form map</text>
+
+            <rect x="206" y="180" width="40" height="14" rx="3" fill="#3a3a3a" stroke="#555" stroke-width="0.5"/>
+            <text x="226" y="189" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="6" fill="#bbb">Cancel</text>
+            <rect x="252" y="180" width="36" height="14" rx="3" fill="#4a7aff"/>
+            <text x="270" y="189" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="6" fill="white" font-weight="500">Gen...</text>
+          </svg>
+        </div>
+      </div>
+      <div class="expand-section" onclick="toggleExpand(this)">
+        <div class="expand-header">
+          <span class="expand-label">Installation & supported forms</span>
+          <span class="expand-toggle">+</span>
+        </div>
+        <div class="expand-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Installation</div>
+              <div class="install-steps">
+                <div class="install-step"><div class="install-text">Download <code>FormScaffold5.qml</code> from GitHub or the button above</div></div>
+                <div class="install-step"><div class="install-text">Copy to <code>~/Documents/MuseScore4/Plugins/</code></div></div>
+                <div class="install-step"><div class="install-text">Go to <code>Home > Plugins</code> and enable "Form Scaffold". Restart if needed.</div></div>
+                <div class="install-step"><div class="install-text">Open a score, then run <code>Plugins > Composition > Form Scaffold</code>. Cmd-Z undoes the entire operation.</div></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Supported forms & presets</div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Sonata</span><span class="cl-desc">Classical (Mozart), Romantic (Beethoven) — P, TR, S, C, Dev, Recap</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Rondo</span><span class="cl-desc">5-part (ABACA), 7-part (ABACABA)</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Theme & Var</span><span class="cl-desc">Short (5 var, 8-bar), Long (8 var, 16-bar)</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Ternary</span><span class="cl-desc">Simple ABA, Minuet & Trio</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Binary</span><span class="cl-desc">Simple AB, Rounded ABA'</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Fugue</span><span class="cl-desc">3-voice (short), 4-voice (extended)</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Concerto</span><span class="cl-desc">Classical (Mozart), Romantic (Brahms)</span></div>
+              <div class="changelog-item"><span class="cl-version" style="min-width:100px">Song Form</span><span class="cl-desc">AABA 32-bar, Verse-Chorus-Bridge</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugin 4 -->
+    <div class="plugin-card">
+      <div class="plugin-main">
+        <div class="plugin-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--amber-bg);color:var(--amber-text)">Pt</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Part Extractor Pro</div>
+              <div class="plugin-tagline">Smart part extraction with cue notes, rehearsal mark alignment, and page turn optimization</div>
+              <div class="plugin-badges">
+                <span class="badge badge-paid">$8</span>
+                <span class="badge badge-platform">MuseScore 4</span>
+                <span class="badge badge-beta">Beta</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">Goes beyond MuseScore's built-in part extraction. Automatically adds cue notes at major entrances, aligns rehearsal marks across parts, optimizes page turns to avoid breaking mid-phrase, and generates a cover page with performance metadata. Saves hours of manual part preparation.</div>
+          <div class="plugin-features">
+            <span class="feature-tag">Auto cue notes</span>
+            <span class="feature-tag">Page turn optimization</span>
+            <span class="feature-tag">Rehearsal mark sync</span>
+            <span class="feature-tag">Cover page generation</span>
+          </div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Purchase — $8</a>
+            <a class="plugin-btn" href="#">Documentation</a>
+          </div>
+        </div>
+        <div class="plugin-screenshot">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="300" height="200" fill="white" rx="4" stroke="var(--cream-dark)" stroke-width="1"/>
+            <rect x="20" y="15" width="120" height="170" rx="3" fill="white" stroke="var(--cream-dark)" stroke-width="0.8"/>
+            <text x="80" y="30" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--text-dark)" font-weight="600">Violin I</text>
+            <text x="80" y="40" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="5" fill="var(--text-mid)">Meridian Lines</text>
+            <line x1="30" y1="55" x2="130" y2="55" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="60" x2="130" y2="60" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="65" x2="130" y2="65" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="70" x2="130" y2="70" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="75" x2="130" y2="75" stroke="var(--text-light)" stroke-width="0.3"/>
+            <rect x="30" y="50" width="14" height="9" rx="1" fill="var(--gold-pale)" stroke="var(--gold)" stroke-width="0.4"/>
+            <text x="37" y="57" text-anchor="middle" font-family="'DM Mono',monospace" font-size="5" fill="var(--gold-muted)" font-weight="500">A</text>
+            <line x1="30" y1="90" x2="130" y2="90" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="95" x2="130" y2="95" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="100" x2="130" y2="100" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="105" x2="130" y2="105" stroke="var(--text-light)" stroke-width="0.3"/>
+            <line x1="30" y1="110" x2="130" y2="110" stroke="var(--text-light)" stroke-width="0.3"/>
+            <rect x="55" y="93" width="50" height="10" rx="2" fill="var(--blue-bg)" stroke="var(--blue-text)" stroke-width="0.3"/>
+            <text x="80" y="100" text-anchor="middle" font-family="'DM Mono',monospace" font-size="4.5" fill="var(--blue-text)">cue: Vlc.</text>
+            <rect x="160" y="15" width="120" height="170" rx="3" fill="white" stroke="var(--cream-dark)" stroke-width="0.8"/>
+            <text x="220" y="30" text-anchor="middle" font-family="'DM Mono',monospace" font-size="5" fill="var(--text-light)">Page 2</text>
+            <rect x="160" y="170" width="120" height="15" rx="0" fill="var(--green-bg)"/>
+            <text x="220" y="180" text-anchor="middle" font-family="'DM Mono',monospace" font-size="5" fill="var(--green-text)">Safe page turn (2 bars rest)</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">Web tools</span>
+      <span class="section-count">2 tools</span>
+    </div>
+
+    <div class="web-tool-card">
+      <div class="web-tool-inner">
+        <div class="web-tool-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--gold-pale);color:var(--gold-muted)">Bd</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Bestiary Draw Tool</div>
+              <div class="plugin-tagline">The Compositional Bestiary's interactive card draw, in the browser</div>
+              <div class="plugin-badges">
+                <span class="badge badge-free">Free to try</span>
+                <span class="badge badge-platform">Web app</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">The full interactive draw experience from the Compositional Bestiary — single cards, three-card spreads, and generative five-card layouts. Free to try with a sample deck; full deck requires a digital Bestiary purchase.</div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Launch web app</a>
+            <a class="plugin-btn" href="#">Learn about the Bestiary</a>
+          </div>
+        </div>
+        <div class="web-tool-preview">
+          <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="65" height="95" rx="4" fill="rgba(245,240,232,0.08)" stroke="rgba(245,240,232,0.15)" stroke-width="0.5"/>
+            <rect x="10" y="10" width="65" height="3" rx="0" fill="#b85c20" opacity="0.6"/>
+            <text x="42" y="50" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.6" font-weight="600">Spectral</text>
+            <text x="42" y="60" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.6" font-weight="600">harmony</text>
+            <rect x="85" y="10" width="65" height="95" rx="4" fill="rgba(245,240,232,0.08)" stroke="rgba(245,240,232,0.15)" stroke-width="0.5"/>
+            <rect x="85" y="10" width="65" height="3" rx="0" fill="#2a7a5a" opacity="0.6"/>
+            <text x="117" y="50" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.6" font-weight="600">Circular</text>
+            <text x="117" y="60" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.6" font-weight="600">form</text>
+            <rect x="160" y="10" width="65" height="95" rx="4" fill="rgba(245,240,232,0.08)" stroke="var(--gold)" stroke-width="1"/>
+            <rect x="160" y="10" width="65" height="3" rx="0" fill="#8a3a5a" opacity="0.6"/>
+            <text x="192" y="50" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.8" font-weight="600">Polymetric</text>
+            <text x="192" y="60" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="7" fill="var(--cream)" opacity="0.8" font-weight="600">layering</text>
+            <text x="120" y="125" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="var(--cream)" opacity="0.3">3-card generative spread</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="web-tool-card">
+      <div class="web-tool-inner">
+        <div class="web-tool-info">
+          <div class="plugin-header">
+            <div class="plugin-icon" style="background:var(--blue-bg);color:var(--blue-text)">Ic</div>
+            <div class="plugin-titles">
+              <div class="plugin-name">Interval Calculator</div>
+              <div class="plugin-tagline">Quick reference for intervals, inversions, and transpositions</div>
+              <div class="plugin-badges">
+                <span class="badge badge-free">Free</span>
+                <span class="badge badge-platform">Web app</span>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-desc">A simple, fast web tool for music theory students and working composers. Enter two pitches and get the interval name, quality, inversion, and enharmonic equivalents. Includes a transposition calculator and a reference chart for all intervals.</div>
+          <div class="plugin-actions">
+            <a class="plugin-btn primary" href="#">Launch web app</a>
+            <a class="plugin-btn" href="#">GitHub</a>
+          </div>
+        </div>
+        <div class="web-tool-preview">
+          <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="20" width="180" height="100" rx="6" fill="rgba(245,240,232,0.06)" stroke="rgba(245,240,232,0.12)" stroke-width="0.5"/>
+            <text x="50" y="42" font-family="'DM Mono',monospace" font-size="6" fill="var(--cream)" opacity="0.4">FROM</text>
+            <rect x="50" y="46" width="50" height="18" rx="3" fill="rgba(245,240,232,0.08)" stroke="rgba(245,240,232,0.15)" stroke-width="0.5"/>
+            <text x="75" y="58" text-anchor="middle" font-family="'DM Mono',monospace" font-size="10" fill="var(--cream)" opacity="0.7">C4</text>
+            <text x="140" y="42" font-family="'DM Mono',monospace" font-size="6" fill="var(--cream)" opacity="0.4">TO</text>
+            <rect x="140" y="46" width="50" height="18" rx="3" fill="rgba(245,240,232,0.08)" stroke="rgba(245,240,232,0.15)" stroke-width="0.5"/>
+            <text x="165" y="58" text-anchor="middle" font-family="'DM Mono',monospace" font-size="10" fill="var(--cream)" opacity="0.7">Ab5</text>
+            <line x1="50" y1="78" x2="190" y2="78" stroke="rgba(245,240,232,0.08)" stroke-width="0.5"/>
+            <text x="120" y="92" text-anchor="middle" font-family="'Source Serif 4',serif" font-size="14" fill="var(--gold)" opacity="0.8">minor 13th</text>
+            <text x="120" y="105" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="var(--cream)" opacity="0.4">20 semitones | inversion: Major 3rd</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:white;border:1px solid var(--cream-dark);border-radius:10px;padding:24px;display:flex;align-items:center;gap:20px">
+    <div style="flex:1">
+      <div style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:600;margin-bottom:4px">Have an idea for a plugin?</div>
+      <div style="font-family:'Source Serif 4',serif;font-size:13px;color:var(--text-mid);line-height:1.6">I'm always interested in tools that solve real problems in the composition workflow. If you have an idea — or a pain point you wish someone would fix — I'd love to hear about it.</div>
+    </div>
+    <a class="plugin-btn" href="#" style="flex-shrink:0;padding:10px 20px">Suggest a plugin</a>
+  </div>
+
+</div>
+
+<div class="page-footer">
+  <div class="footer-links">
+    <a class="footer-link" href="#">email</a>
+    <a class="footer-link" href="#">instagram</a>
+    <a class="footer-link" href="#">youtube</a>
+    <a class="footer-link" href="#">github</a>
+  </div>
+</div>
+
+<script>
+function toggleExpand(section) {
+  section.classList.toggle('open');
+}
+
+document.querySelectorAll('.filter-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

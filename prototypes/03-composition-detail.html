@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian Lines — Nicholas Composer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0e1b2e;--navy-mid:#1a2d4a;--navy-light:#243b5c;--cream:#f5f0e8;--cream-dark:#e8e0d2;--cream-mid:#ece5d8;--gold:#c8963e;--gold-light:#d4a854;--gold-muted:#a07830;--gold-pale:#f0e6d0;--text-dark:#1a1a18;--text-mid:#5a5650;--text-light:#8a8580;--tag-bg:#eae5dc;--tag-color:#5a5650}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--cream);-webkit-font-smoothing:antialiased}
+
+/* Nav */
+.nav{background:var(--navy);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:'Source Serif 4',serif;color:var(--cream);font-size:20px;font-weight:600;letter-spacing:-0.02em;text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream-dark);text-decoration:none;opacity:0.6;transition:opacity 0.2s}
+.nav-links a:hover{opacity:1}
+.nav-links a.active{opacity:1;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:2px}
+
+/* Header motif */
+.hm{background:var(--navy);overflow:hidden;height:16px;position:relative}
+.hm svg{position:absolute;top:0;left:0;width:100%;height:100%}
+
+/* Breadcrumb */
+.breadcrumb{background:var(--navy);padding:0 2.5rem 1rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.04em}
+.breadcrumb a{color:var(--cream-dark);opacity:0.5;text-decoration:none}
+.breadcrumb a:hover{opacity:0.8}
+.breadcrumb .sep{color:var(--cream-dark);opacity:0.3;margin:0 8px}
+.breadcrumb .current{color:var(--gold);opacity:0.8}
+
+/* Hero */
+.hero{background:var(--navy);padding:0 2.5rem 2.5rem;border-bottom:2px solid var(--gold);position:relative;overflow:hidden}
+.hero-watermark{position:absolute;right:2rem;top:50%;transform:translateY(-50%);opacity:0.04;pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 300px;gap:2rem;align-items:end;position:relative;z-index:1}
+.hero h1{font-family:'Source Serif 4',serif;font-size:38px;font-weight:300;color:var(--cream);letter-spacing:-0.01em;line-height:1.15;margin-bottom:6px}
+.hero-sub{font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream-dark);opacity:0.7;margin-bottom:16px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hm-item{display:flex;flex-direction:column;gap:2px}
+.hm-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--cream-dark);opacity:0.4}
+.hm-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--cream);opacity:0.9}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.hero-tag{font-size:11px;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:3px;background:rgba(245,240,232,0.1);color:var(--cream-dark);opacity:0.7;border:1px solid rgba(245,240,232,0.1)}
+.hero-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.hero-btn{padding:10px 24px;border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.04em;cursor:pointer;transition:all 0.2s;text-align:center;min-width:200px;border:none}
+.hero-btn.primary{background:var(--gold);color:var(--navy);font-weight:500}
+.hero-btn.primary:hover{background:var(--gold-light)}
+.hero-btn.secondary{background:transparent;color:var(--cream);border:1px solid rgba(245,240,232,0.3)}
+.hero-btn.secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Content */
+.content{max-width:1200px;margin:0 auto;padding:2rem 2.5rem}
+.main-layout{display:grid;grid-template-columns:1fr 300px;gap:2.5rem;align-items:start}
+.section{margin-bottom:2.5rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:1px solid var(--cream-dark);padding-bottom:8px}
+.section-title{font-family:'Source Serif 4',serif;font-size:20px;font-weight:600}
+.section-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light)}
+.section-subtitle{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light);margin-bottom:12px}
+
+/* Program note */
+.program-note{font-family:'Source Serif 4',serif;font-size:15px;line-height:1.75;color:var(--text-mid);max-width:680px}
+.program-note p{margin-bottom:1rem}
+
+/* Audio */
+.audio-player{background:white;border:1px solid var(--cream-dark);border-radius:8px;overflow:hidden}
+.audio-track{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream-mid);transition:background 0.15s}
+.audio-track:last-child{border-bottom:none}
+.audio-track:hover{background:rgba(200,150,62,0.04)}
+.track-play{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--navy);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0}
+.track-play:hover{background:var(--navy)}
+.track-play:hover .t-tri{border-left-color:var(--cream)}
+.t-tri{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:9px solid var(--navy);margin-left:2px}
+.track-info{flex:1;min-width:0}
+.track-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-detail{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);margin-top:2px}
+.track-wave{flex:1;max-width:220px;height:26px;display:flex;align-items:center;gap:1px}
+.tw-bar{width:2px;border-radius:1px;background:var(--navy-light);opacity:0.2;transition:opacity 0.2s}
+.audio-track:hover .tw-bar{opacity:0.4}
+.track-dur{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light);flex-shrink:0;min-width:40px;text-align:right}
+.track-dl{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-muted);text-decoration:none;padding:4px 10px;border:1px solid var(--cream-dark);border-radius:4px;flex-shrink:0;transition:all 0.15s}
+.track-dl:hover{border-color:var(--gold);background:var(--gold-pale)}
+
+/* Score cards */
+.score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.score-card{background:white;border:1px solid var(--cream-dark);border-radius:8px;padding:16px;transition:border-color 0.2s;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.score-card:hover{border-color:var(--gold)}
+.score-preview{background:var(--cream);border-radius:4px;height:80px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.sc-title{font-size:13px;font-weight:500}
+.sc-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light)}
+.sc-actions{display:flex;gap:6px;margin-top:auto}
+.sc-act{font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;border-radius:4px;border:1px solid var(--cream-dark);background:transparent;color:var(--text-mid);cursor:pointer;transition:all 0.15s;text-decoration:none}
+.sc-act:hover{border-color:var(--gold);color:var(--gold-muted)}
+.sc-act.primary{background:var(--gold-pale);border-color:var(--gold-pale);color:var(--gold-muted)}
+.sc-act.primary:hover{background:var(--gold);color:var(--navy)}
+
+/* Video */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.video-card{background:white;border:1px solid var(--cream-dark);border-radius:8px;overflow:hidden;transition:border-color 0.2s;cursor:pointer}
+.video-card:hover{border-color:var(--gold)}
+.video-thumb{background:var(--navy);height:160px;display:flex;align-items:center;justify-content:center;position:relative}
+.vp-icon{width:52px;height:52px;border-radius:50%;border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;opacity:0.6;transition:opacity 0.2s}
+.video-card:hover .vp-icon{opacity:1}
+.vp-tri{width:0;height:0;border-top:11px solid transparent;border-bottom:11px solid transparent;border-left:18px solid var(--cream);margin-left:3px}
+.v-badge{position:absolute;top:10px;right:10px;font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:3px;background:rgba(0,0,0,0.5);color:var(--cream)}
+.v-info{padding:14px 16px}
+.v-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.v-detail{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);line-height:1.5}
+
+/* Versions */
+.versions-box{background:white;border:1px solid var(--cream-dark);border-radius:8px;padding:20px}
+.vn{background:var(--cream);border:1px solid var(--cream-dark);border-radius:6px;padding:12px 16px;transition:border-color 0.2s;cursor:pointer;position:relative;flex:1}
+.vn:hover{border-color:var(--gold)}
+.vn.current{border-color:var(--gold);border-width:2px;background:var(--gold-pale)}
+.vn-title{font-size:13px;font-weight:500}
+.vn-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light);margin-top:2px}
+.vn-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border-radius:3px;background:var(--tag-bg);color:var(--tag-color);position:absolute;top:8px;right:8px}
+.vn.current .vn-badge{background:var(--gold);color:var(--navy)}
+.v-branch{display:flex;align-items:center;margin-bottom:8px}
+.v-branch:last-child{margin-bottom:0}
+
+/* Network graph */
+.network-container{background:white;border:1px solid var(--cream-dark);border-radius:8px;overflow:hidden;position:relative}
+.net-canvas{width:100%;height:460px;display:block}
+.net-legend{display:flex;gap:16px;padding:12px 16px;border-top:1px solid var(--cream-mid);flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-light)}
+.leg-line{width:20px;height:2px;border-radius:1px}
+.net-tooltip{position:absolute;background:var(--navy);color:var(--cream);padding:10px 14px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;pointer-events:none;display:none;z-index:10;max-width:220px}
+.tt-title{font-weight:500;margin-bottom:2px}
+.tt-sub{font-family:'DM Mono',monospace;font-size:10px;opacity:0.7}
+.tt-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tt-tag{font-family:'DM Mono',monospace;font-size:9px;padding:1px 6px;border-radius:2px;background:rgba(200,150,62,0.3);color:var(--gold-light)}
+
+/* Performances */
+.perf-item{display:flex;align-items:center;gap:16px;padding:14px 16px;background:white;border:1px solid var(--cream-dark);border-bottom:none;transition:background 0.15s}
+.perf-item:first-child{border-radius:8px 8px 0 0}
+.perf-item:last-child{border-radius:0 0 8px 8px;border-bottom:1px solid var(--cream-dark)}
+.perf-item:hover{background:rgba(200,150,62,0.03)}
+.perf-date{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-mid);min-width:100px;flex-shrink:0}
+.perf-ensemble{font-size:14px;font-weight:500}
+.perf-venue{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-light);margin-top:2px}
+.perf-link{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-muted);text-decoration:none;padding:4px 10px;border:1px solid var(--cream-dark);border-radius:4px;flex-shrink:0;transition:all 0.15s}
+.perf-link:hover{border-color:var(--gold);background:var(--gold-pale)}
+.perf-label{font-size:9px;color:var(--gold-muted);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-top:2px}
+
+/* Sidebar */
+.sidebar-box{background:white;border:1px solid var(--cream-dark);border-radius:8px;padding:20px;margin-bottom:16px}
+.sidebar-box h3{font-family:'Source Serif 4',serif;font-size:16px;font-weight:600;margin-bottom:12px}
+.d-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--cream-mid)}
+.d-row:last-child{border-bottom:none}
+.d-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light)}
+.d-val{font-size:13px;text-align:right}
+
+/* Responsive */
+@media(max-width:900px){
+  .nav{padding:0 1.5rem}
+  .hero{padding:0 1.5rem 2rem}
+  .hero-inner{grid-template-columns:1fr;gap:1.5rem}
+  .hero-right{align-items:stretch}
+  .hero-btn{min-width:auto}
+  .content{padding:1.5rem}
+  .main-layout{grid-template-columns:1fr}
+  .breadcrumb{padding:0 1.5rem 0.75rem}
+  .hero h1{font-size:30px}
+  .score-grid{grid-template-columns:1fr 1fr}
+  .video-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">Nicholas <span>Composer</span></a>
+  <ul class="nav-links">
+    <li><a href="#">works</a></li>
+    <li><a href="#" class="active">catalog</a></li>
+    <li><a href="#">about</a></li>
+    <li><a href="#">commissions</a></li>
+    <li><a href="#">contact</a></li>
+  </ul>
+</nav>
+
+<div class="hm"><svg viewBox="0 0 1400 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="3" x2="1400" y2="3" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="6" x2="1400" y2="6" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="9" x2="1400" y2="9" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="12" x2="1400" y2="12" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><line x1="0" y1="15" x2="1400" y2="15" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/><ellipse cx="150" cy="9" rx="3" ry="2.2" fill="#c8963e" opacity="0.12"/><line x1="153" y1="9" x2="153" y2="2" stroke="#c8963e" stroke-width="0.5" opacity="0.12"/><ellipse cx="500" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/><ellipse cx="900" cy="12" rx="3" ry="2.2" fill="#c8963e" opacity="0.1"/><line x1="903" y1="12" x2="903" y2="5" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/><ellipse cx="1250" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.08"/></svg></div>
+
+<div class="breadcrumb">
+  <a href="#">Catalog</a><span class="sep">/</span><span class="current">Meridian Lines</span>
+</div>
+
+<div class="hero">
+  <div class="hero-watermark">
+    <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="60" x2="400" y2="60" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="72" x2="400" y2="72" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="84" x2="400" y2="84" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="96" x2="400" y2="96" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="108" x2="400" y2="108" stroke="#f5f0e8" stroke-width="1"/>
+      <line x1="0" y1="130" x2="400" y2="130" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="142" x2="400" y2="142" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="154" x2="400" y2="154" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="166" x2="400" y2="166" stroke="#f5f0e8" stroke-width="1"/><line x1="0" y1="178" x2="400" y2="178" stroke="#f5f0e8" stroke-width="1"/>
+      <ellipse cx="40" cy="84" rx="7" ry="5" fill="none" stroke="#f5f0e8" stroke-width="1.2" transform="rotate(-15,40,84)"/><line x1="47" y1="84" x2="47" y2="55" stroke="#f5f0e8" stroke-width="1.2"/>
+      <ellipse cx="80" cy="96" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,80,96)"/><line x1="73" y1="96" x2="73" y2="120" stroke="#f5f0e8" stroke-width="1.2"/>
+      <ellipse cx="120" cy="72" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,120,72)"/><line x1="127" y1="72" x2="127" y2="45" stroke="#f5f0e8" stroke-width="1.2"/><path d="M127,45 C127,42 130,40 132,42" fill="none" stroke="#f5f0e8" stroke-width="1"/>
+      <ellipse cx="160" cy="84" rx="7" ry="5" fill="none" stroke="#f5f0e8" stroke-width="1.2" transform="rotate(-15,160,84)"/><line x1="167" y1="84" x2="167" y2="55" stroke="#f5f0e8" stroke-width="1.2"/>
+      <ellipse cx="220" cy="60" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,220,60)"/><line x1="227" y1="60" x2="227" y2="35" stroke="#f5f0e8" stroke-width="1.2"/><line x1="227" y1="35" x2="234" y2="35" stroke="#f5f0e8" stroke-width="1"/>
+      <path d="M260,108 L260,55 C260,52 262,50 265,50" fill="none" stroke="#f5f0e8" stroke-width="1.2"/><ellipse cx="253" cy="108" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,253,108)"/>
+      <ellipse cx="300" cy="72" rx="7" ry="5" fill="none" stroke="#f5f0e8" stroke-width="1.2" transform="rotate(-15,300,72)"/>
+      <ellipse cx="50" cy="154" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,50,154)"/><line x1="43" y1="154" x2="43" y2="185" stroke="#f5f0e8" stroke-width="1.2"/>
+      <ellipse cx="100" cy="142" rx="7" ry="5" fill="none" stroke="#f5f0e8" stroke-width="1.2" transform="rotate(-15,100,142)"/><line x1="107" y1="142" x2="107" y2="118" stroke="#f5f0e8" stroke-width="1.2"/>
+      <ellipse cx="160" cy="166" rx="7" ry="5" fill="#f5f0e8" transform="rotate(-15,160,166)"/><line x1="167" y1="166" x2="167" y2="140" stroke="#f5f0e8" stroke-width="1.2"/>
+      <text x="340" y="100" font-family="'Source Serif 4',serif" font-size="11" fill="#f5f0e8" opacity="0.6" font-style="italic">pp</text>
+      <path d="M330,130 Q350,125 370,130" fill="none" stroke="#f5f0e8" stroke-width="0.8"/>
+      <text x="200" y="195" font-family="'DM Mono',monospace" font-size="8" fill="#f5f0e8" opacity="0.4">Mvt. I — Antemeridian</text>
+    </svg>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <h1>Meridian Lines</h1>
+      <div class="hero-sub">for string quartet and electronics</div>
+      <div class="hero-meta">
+        <div class="hm-item"><span class="hm-label">Year</span><span class="hm-val">2024</span></div>
+        <div class="hm-item"><span class="hm-label">Duration</span><span class="hm-val">14:30</span></div>
+        <div class="hm-item"><span class="hm-label">Movements</span><span class="hm-val">III</span></div>
+        <div class="hm-item"><span class="hm-label">Premiere</span><span class="hm-val">Mar 2024</span></div>
+      </div>
+      <div class="hero-tags">
+        <span class="hero-tag">Reflective</span><span class="hero-tag">Sonorous</span><span class="hero-tag">Modal</span><span class="hero-tag">Slow</span><span class="hero-tag">Electronics</span><span class="hero-tag">Chamber</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <button class="hero-btn primary">License this work</button>
+      <button class="hero-btn secondary">Request a perusal score</button>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="main-layout">
+    <div>
+      <div class="section">
+        <div class="section-head"><span class="section-title">Program note</span></div>
+        <div class="program-note">
+          <p>Meridian Lines traces the invisible boundaries that divide and connect — time zones, political borders, the liminal space between waking and sleep. Each of the three movements explores a different kind of threshold, using the string quartet as an acoustic body that the electronics gradually infiltrate and extend.</p>
+          <p>The opening movement establishes a slow-breathing harmonic field rooted in Phrygian modality, over which spectral processing reveals hidden overtones. The second movement fractures this stillness into rapid gestural exchanges, while the finale attempts a reconciliation between the organic and the synthetic.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Audio</span><span class="section-count">3 tracks</span></div>
+        <div class="audio-player" id="audioPlayer"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Scores & parts</span><span class="section-count">4 files</span></div>
+        <div class="score-grid" id="scoreGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Video</span><span class="section-count">2 recordings</span></div>
+        <div class="video-grid" id="videoGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Versions & arrangements</span></div>
+        <div class="section-subtitle">Works derived from or leading to this composition</div>
+        <div class="versions-box" id="versionTree"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Related works</span></div>
+        <div class="section-subtitle">Other compositions connected by shared character, instrumentation, or technique</div>
+        <div class="network-container">
+          <canvas class="net-canvas" id="netCanvas"></canvas>
+          <div class="net-tooltip" id="netTooltip"><div class="tt-title"></div><div class="tt-sub"></div><div class="tt-tags"></div></div>
+          <div class="net-legend">
+            <div class="leg-item"><div class="leg-line" style="background:var(--gold)"></div>Instrumentation</div>
+            <div class="leg-item"><div class="leg-line" style="background:var(--navy-light)"></div>Character</div>
+            <div class="leg-item"><div class="leg-line" style="background:#8a7060"></div>Technique</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-title">Performance history</span><span class="section-count">4 performances</span></div>
+        <div id="perfList"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sidebar-box">
+        <h3>Details</h3>
+        <div class="d-row"><span class="d-label">Instrumentation</span><span class="d-val">2 vln, vla, vlc, elec</span></div>
+        <div class="d-row"><span class="d-label">Duration</span><span class="d-val">ca. 14 minutes</span></div>
+        <div class="d-row"><span class="d-label">Movements</span><span class="d-val">I. Antemeridian<br/>II. Fracture Zone<br/>III. Convergence</span></div>
+        <div class="d-row"><span class="d-label">Commission</span><span class="d-val">Latitude Ensemble</span></div>
+        <div class="d-row"><span class="d-label">Dedication</span><span class="d-val">for M.K.</span></div>
+      </div>
+      <div class="sidebar-box">
+        <h3>Licensing</h3>
+        <div class="d-row"><span class="d-label">Performance</span><span class="d-val">License required</span></div>
+        <div class="d-row"><span class="d-label">Recording</span><span class="d-val">Contact for terms</span></div>
+        <div class="d-row"><span class="d-label">Score</span><span class="d-val">$45 (PDF)</span></div>
+        <div class="d-row"><span class="d-label">Parts rental</span><span class="d-val">Contact for quote</span></div>
+        <div style="margin-top:14px"><button class="hero-btn primary" style="width:100%;padding:8px 16px;font-size:11px;border-radius:4px">Inquire about licensing</button></div>
+      </div>
+      <div class="sidebar-box">
+        <h3>Technical requirements</h3>
+        <div class="d-row"><span class="d-label">Electronics</span><span class="d-val">Max/MSP patch</span></div>
+        <div class="d-row"><span class="d-label">Audio I/O</span><span class="d-val">4-in / 4-out min</span></div>
+        <div class="d-row"><span class="d-label">Speakers</span><span class="d-val">Quadraphonic</span></div>
+        <div class="d-row"><span class="d-label">Setup</span><span class="d-val">45 minutes</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Audio */
+var tracks=[
+  {name:"I. Antemeridian",detail:"Studio — Latitude Ensemble, 2024",dur:"5:42",dl:true},
+  {name:"II. Fracture Zone",detail:"Studio — Latitude Ensemble, 2024",dur:"4:18",dl:true},
+  {name:"III. Convergence",detail:"Live at Wigmore Hall, 2024",dur:"4:30",dl:false}
+];
+document.getElementById('audioPlayer').innerHTML=tracks.map(function(t){
+  var w='';for(var i=0;i<55;i++)w+='<div class="tw-bar" style="height:'+Math.round(3+Math.random()*20)+'px"></div>';
+  return '<div class="audio-track"><button class="track-play"><div class="t-tri"></div></button><div class="track-info"><div class="track-name">'+t.name+'</div><div class="track-detail">'+t.detail+'</div></div><div class="track-wave">'+w+'</div><span class="track-dur">'+t.dur+'</span>'+(t.dl?'<a class="track-dl" href="#">download</a>':'')+'</div>';
+}).join('');
+
+/* Scores */
+var scores=[{title:"Full score",meta:"PDF — 42 pages — v2.1",p:true,b:true},{title:"Parts set",meta:"PDF — vln I, vln II, vla, vlc",p:false,b:true},{title:"Electronics patch",meta:"Max/MSP — v1.3",p:false,b:false},{title:"Performance notes",meta:"PDF — 6 pages",p:true,b:false}];
+document.getElementById('scoreGrid').innerHTML=scores.map(function(s){
+  var lines='';for(var i=0;i<5;i++)lines+='<div style="height:1px;background:var(--text-light);opacity:0.15;margin-bottom:5px"></div>';
+  var acts='';if(s.p)acts+='<a class="sc-act" href="#">Preview</a>';if(s.b)acts+='<a class="sc-act primary" href="#">Download</a>';if(!s.p&&!s.b)acts+='<a class="sc-act" href="#">Included</a>';
+  return '<div class="score-card"><div class="score-preview"><div style="width:80%;position:absolute;top:50%;transform:translateY(-50%)">'+lines+'</div></div><div class="sc-title">'+s.title+'</div><div class="sc-meta">'+s.meta+'</div><div class="sc-actions">'+acts+'</div></div>';
+}).join('');
+
+/* Video */
+var videos=[{title:"Premiere — Latitude Ensemble",detail:"Wigmore Hall, London — Mar 2024",badge:"Full performance"},{title:"Movement II excerpt — rehearsal",detail:"Studio session — Feb 2024",badge:"Excerpt"}];
+document.getElementById('videoGrid').innerHTML=videos.map(function(v){
+  return '<div class="video-card"><div class="video-thumb"><div class="vp-icon"><div class="vp-tri"></div></div><span class="v-badge">'+v.badge+'</span></div><div class="v-info"><div class="v-title">'+v.title+'</div><div class="v-detail">'+v.detail+'</div></div></div>';
+}).join('');
+
+/* Versions */
+var versions=[{title:"Meridian Lines",sub:"String quartet + electronics — 2024",badge:"Current",cur:true},{title:"Meridian Lines (acoustic)",sub:"String quartet only — 2024",badge:"Alternate",cur:false},{title:"Meridian Sketches",sub:"Solo violin — 2022",badge:"Origin",cur:false},{title:"Meridian Lines (sextet)",sub:"String sextet + electronics — in progress",badge:"In progress",cur:false}];
+document.getElementById('versionTree').innerHTML=versions.map(function(v,i){
+  var indent=i>0?'<div style="width:'+Math.min(i*24,48)+'px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end"><svg width="'+Math.min(i*24,48)+'" height="40" style="overflow:visible"><path d="M0,0 L0,20 L'+Math.min(i*24,48)+',20" fill="none" stroke="#e8e0d2" stroke-width="2"/></svg></div>':'';
+  return '<div class="v-branch">'+indent+'<div class="vn'+(v.cur?' current':'')+'"><div class="vn-title">'+v.title+'</div><div class="vn-meta">'+v.sub+'</div><span class="vn-badge">'+v.badge+'</span></div></div>';
+}).join('');
+
+/* Performances */
+var perfs=[
+  {date:"Mar 15, 2024",ens:"Latitude Ensemble",ven:"Wigmore Hall, London",link:true,label:"Premiere"},
+  {date:"Jun 8, 2024",ens:"Argento Chamber Ensemble",ven:"Miller Theatre, New York",link:true,label:"US Premiere"},
+  {date:"Sep 22, 2024",ens:"Latitude Ensemble",ven:"Muziekgebouw, Amsterdam",link:false,label:""},
+  {date:"Jan 10, 2025",ens:"JACK Quartet",ven:"Roulette, Brooklyn",link:true,label:""}
+];
+document.getElementById('perfList').innerHTML=perfs.map(function(p){
+  return '<div class="perf-item"><span class="perf-date">'+p.date+(p.label?'<span class="perf-label">'+p.label+'</span>':'')+'</span><div style="flex:1"><div class="perf-ensemble">'+p.ens+'</div><div class="perf-venue">'+p.ven+'</div></div>'+(p.link?'<a class="perf-link" href="#">Recording</a>':'')+'</div>';
+}).join('');
+
+/* Network Graph */
+var nodes=[
+  {id:0,label:"Meridian Lines",sub:"str qt + elec, 2024",tags:["Reflective","Sonorous","Modal","Electronics","Chamber"],center:true},
+  {id:1,label:"Nocturne with Satellites",sub:"vln + elec, 2021",shared:["Sonorous","Electronics"]},
+  {id:2,label:"Five Ghazals",sub:"sop, oud, vlc, 2023",shared:["Chamber"]},
+  {id:3,label:"Glass Topography",sub:"solo piano, 2022",shared:["Reflective"]},
+  {id:4,label:"Tectonic Hymn",sub:"orchestra, 2023",shared:["Sonorous"]},
+  {id:5,label:"Pulse Garden",sub:"perc ens, 2022",shared:["Chamber"]},
+  {id:6,label:"Threshold Music",sub:"str qt, 2020",shared:["Reflective","Sonorous","Chamber"]},
+  {id:7,label:"Spectral Cartography",sub:"ens + elec, 2019",shared:["Electronics"]}
+];
+var edgesData=[
+  {from:0,to:1,type:"technique",label:"Electronics"},{from:0,to:1,type:"character",label:"Sonorous"},
+  {from:0,to:2,type:"instrumentation",label:"Chamber"},{from:0,to:3,type:"character",label:"Reflective"},
+  {from:0,to:4,type:"character",label:"Sonorous"},{from:0,to:5,type:"instrumentation",label:"Chamber"},
+  {from:0,to:6,type:"character",label:"Reflective"},{from:0,to:6,type:"instrumentation",label:"Chamber"},
+  {from:0,to:6,type:"character",label:"Sonorous"},{from:0,to:7,type:"technique",label:"Electronics"}
+];
+var edgeColors={instrumentation:"#c8963e",character:"#243b5c",technique:"#8a7060"};
+
+var canvas=document.getElementById('netCanvas');
+var ctx=canvas.getContext('2d');
+var tooltip=document.getElementById('netTooltip');
+var W,H,dpr;
+
+function resize(){
+  var rect=canvas.getBoundingClientRect();
+  dpr=window.devicePixelRatio||1;
+  W=rect.width;H=rect.height;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  layoutNodes();
+  draw();
+}
+
+var positions=[];
+function layoutNodes(){
+  positions=[];
+  var cxC=W/2,cyC=H/2;
+  var angleStep=2*Math.PI/(nodes.length-1);
+  var rad=Math.min(W,H)*0.34;
+  nodes.forEach(function(n,i){
+    if(n.center){positions.push({x:cxC,y:cyC});}
+    else{var a=angleStep*(i-1)-Math.PI/2;positions.push({x:cxC+Math.cos(a)*rad,y:cyC+Math.sin(a)*rad});}
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  var groups={};
+  edgesData.forEach(function(e){
+    var k=Math.min(e.from,e.to)+'-'+Math.max(e.from,e.to);
+    if(!groups[k])groups[k]=[];
+    groups[k].push(e);
+  });
+  Object.keys(groups).forEach(function(k){
+    var g=groups[k];
+    g.forEach(function(e,gi){
+      var p1=positions[e.from],p2=positions[e.to];
+      var off=(gi-(g.length-1)/2)*5;
+      var mx=(p1.x+p2.x)/2,my=(p1.y+p2.y)/2;
+      var dx=p2.x-p1.x,dy=p2.y-p1.y;
+      var len=Math.sqrt(dx*dx+dy*dy)||1;
+      var nx=-dy/len*off,ny=dx/len*off;
+      ctx.beginPath();ctx.strokeStyle=edgeColors[e.type];ctx.lineWidth=1.5;ctx.globalAlpha=0.35;
+      if(e.type==="technique"){ctx.setLineDash([4,4]);}else{ctx.setLineDash([]);}
+      ctx.moveTo(p1.x,p1.y);ctx.quadraticCurveTo(mx+nx,my+ny,p2.x,p2.y);ctx.stroke();ctx.globalAlpha=1;ctx.setLineDash([]);
+      ctx.font="500 8px 'DM Mono',monospace";ctx.fillStyle=edgeColors[e.type];ctx.globalAlpha=0.5;ctx.textAlign="center";
+      ctx.fillText(e.label,mx+nx,my+ny-5);ctx.globalAlpha=1;
+    });
+  });
+  nodes.forEach(function(n,i){
+    var p=positions[i];
+    if(n.center){
+      ctx.beginPath();ctx.arc(p.x,p.y,31,0,Math.PI*2);ctx.fillStyle="#c8963e";ctx.globalAlpha=0.15;ctx.fill();ctx.globalAlpha=1;
+      ctx.beginPath();ctx.arc(p.x,p.y,28,0,Math.PI*2);ctx.fillStyle="#0e1b2e";ctx.fill();ctx.strokeStyle="#c8963e";ctx.lineWidth=2;ctx.stroke();
+      ctx.font="500 11px 'DM Sans',sans-serif";ctx.fillStyle="#f5f0e8";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(n.label,p.x,p.y);
+    } else {
+      ctx.beginPath();ctx.arc(p.x,p.y,20,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.strokeStyle="#e8e0d2";ctx.lineWidth=1;ctx.stroke();
+      ctx.font="500 12px 'Source Serif 4',serif";ctx.fillStyle="#1a2d4a";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(n.label.charAt(0),p.x,p.y);
+      ctx.font="400 10px 'DM Sans',sans-serif";ctx.fillStyle="#1a1a18";ctx.textBaseline="top";ctx.fillText(n.label,p.x,p.y+28);
+      ctx.font="9px 'DM Mono',monospace";ctx.fillStyle="#8a8580";ctx.fillText(n.sub,p.x,p.y+42);
+    }
+  });
+}
+
+resize();
+window.addEventListener('resize',resize);
+
+var hovN=-1;
+canvas.addEventListener('mousemove',function(ev){
+  var rect=canvas.getBoundingClientRect();var mx=ev.clientX-rect.left,my=ev.clientY-rect.top;var found=-1;
+  nodes.forEach(function(n,i){var p=positions[i];var r=n.center?28:20;if((mx-p.x)*(mx-p.x)+(my-p.y)*(my-p.y)<r*r)found=i;});
+  if(found!==hovN){
+    hovN=found;
+    if(found>=0){
+      var n=nodes[found];var p=positions[found];
+      tooltip.querySelector('.tt-title').textContent=n.label;
+      tooltip.querySelector('.tt-sub').textContent=n.sub;
+      tooltip.querySelector('.tt-tags').innerHTML=(n.shared||n.tags).map(function(t){return '<span class="tt-tag">'+t+'</span>';}).join('');
+      tooltip.style.display='block';tooltip.style.left=Math.min(p.x+24,W-230)+'px';tooltip.style.top=(p.y-20)+'px';
+      canvas.style.cursor='pointer';
+    } else {tooltip.style.display='none';canvas.style.cursor='default';}
+  }
+});
+canvas.addEventListener('mouseleave',function(){tooltip.style.display='none';hovN=-1;canvas.style.cursor='default';});
+</script>
+</body>
+</html>
