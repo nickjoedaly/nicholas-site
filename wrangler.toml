@@ -1,0 +1,11 @@
+name = "nicholas-composer-site"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nicholas-site-db"
+database_id = "placeholder-will-be-set-on-first-deploy"
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "nicholas-site-assets"

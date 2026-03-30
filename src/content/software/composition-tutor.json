@@ -1,0 +1,22 @@
+{
+  "name": "Composition Tutor",
+  "tagline": "Guided diagnostic tool for compositional problem-solving",
+  "description": "A decision-tree plugin for MuseScore that helps composers identify and solve compositional problems. Navigate through diagnostic questions across harmony, melody, texture, rhythm, and form to reach targeted solutions with reading references and AI discussion.",
+  "type": "MuseScore Plugin",
+  "badge": "Paid",
+  "features": [
+    "Decision tree diagnostics",
+    "5 compositional domains",
+    "Solution strategies per endpoint",
+    "Reading references",
+    "Discuss with Claude AI button"
+  ],
+  "versionHistory": [
+    { "version": "1.0", "date": "2024-09-01", "notes": "Initial release with full decision tree" }
+  ],
+  "price": 12,
+  "diagnosticCategories": ["Harmony", "Melody", "Texture", "Rhythm", "Form"],
+  "changelog": [
+    { "version": "v1.0", "items": ["Full decision tree across 5 domains", "Claude AI integration", "Reading reference database"] }
+  ]
+}

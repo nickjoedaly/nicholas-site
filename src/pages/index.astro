@@ -1,0 +1,248 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const homepageData = await getEntry('pages', 'homepage');
+const compositions = await getCollection('compositions');
+const featured = compositions.find(c => c.id === homepageData?.data.featuredCompositionId);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero-inner container">
+      <div class="hero-left">
+        <h1>{homepageData?.data.heroTitle || 'Nicholas'}</h1>
+        <p class="hero-subtitle">{homepageData?.data.heroSubtitle || 'Composer & Researcher'}</p>
+        <p class="hero-desc">Compositions, software tools, games, scholarly work, and writings — all in one place.</p>
+      </div>
+      {featured && (
+        <div class="hero-right">
+          <div class="featured-card">
+            <span class="featured-label mono">Latest work</span>
+            <h2 class="featured-title">{featured.data.title}</h2>
+            {featured.data.subtitle && <p class="featured-subtitle">{featured.data.subtitle}</p>}
+            <div class="featured-meta mono">{featured.data.year} &middot; {featured.data.duration}</div>
+            <div class="featured-tags">
+              {[...featured.data.tags.character, ...featured.data.tags.instrumentation].map(tag => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="bento container">
+    <div class="bento-grid">
+      <a href="/compositions" class="bento-card bento-wide">
+        <span class="bento-label mono">{compositions.length} works</span>
+        <h3>Compositions</h3>
+        <p>Browse, filter, preview, and license original works for acoustic and electronic forces.</p>
+      </a>
+      <a href="/bestiary" class="bento-card">
+        <span class="bento-label mono">Game / creative tool</span>
+        <h3>Compositional Bestiary</h3>
+        <p>A card-based system for compositional problem-solving and creative exploration.</p>
+      </a>
+      <a href="/software" class="bento-card">
+        <span class="bento-label mono">Open source</span>
+        <h3>Software & Plugins</h3>
+        <p>MuseScore plugins and web tools for composers and music educators.</p>
+      </a>
+      <a href="/publications" class="bento-card">
+        <span class="bento-label mono">Research</span>
+        <h3>Scholarly Work</h3>
+        <p>PhD thesis, publications, and conference presentations.</p>
+      </a>
+      <a href="/writings" class="bento-card bento-narrow">
+        <span class="bento-label mono">Blog & essays</span>
+        <h3>Writings</h3>
+        <p>Essays, program notes, and reflections on music and composition.</p>
+      </a>
+      <a href="/about" class="bento-card bento-narrow">
+        <span class="bento-label mono">Bio</span>
+        <h3>About</h3>
+        <p>Bio, artistic statement, CV, and contact information.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="commission-strip">
+    <div class="container commission-inner">
+      <div class="commission-icon">&#9834;</div>
+      <div>
+        <h3>Commission a new work</h3>
+        <p class="commission-sub">Ensembles, festivals, individuals — let's create something together.</p>
+      </div>
+      <a href="/commissions" class="commission-btn">Inquire</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: var(--navy);
+    padding: 4rem 0 3.5rem;
+    border-bottom: 2px solid var(--gold);
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+  }
+  .hero-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.5rem;
+  }
+  .hero-desc {
+    color: var(--cream-dark);
+    opacity: 0.6;
+    font-size: 15px;
+    margin-top: 1rem;
+    max-width: 380px;
+    line-height: 1.6;
+  }
+
+  .featured-card {
+    background: rgba(245, 240, 232, 0.04);
+    border: 1px solid rgba(245, 240, 232, 0.08);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  .featured-label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .featured-title {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-top: 0.5rem;
+  }
+  .featured-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dark);
+    opacity: 0.5;
+    margin-top: 0.25rem;
+  }
+  .featured-meta {
+    font-size: 11px;
+    color: var(--cream-dark);
+    opacity: 0.4;
+    margin-top: 0.75rem;
+  }
+  .featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 0.75rem;
+  }
+  .featured-tags .tag {
+    background: rgba(200, 150, 62, 0.1);
+    color: var(--gold-light);
+  }
+
+  /* Bento */
+  .bento {
+    padding: 3rem 2.5rem;
+  }
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+  }
+  .bento-card {
+    grid-column: span 4;
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid var(--cream-dark);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    display: block;
+  }
+  .bento-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 2px 12px rgba(14, 27, 46, 0.06);
+  }
+  .bento-wide { grid-column: span 8; }
+  .bento-narrow { grid-column: span 3; }
+  .bento-label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .bento-card h3 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .bento-card p {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+
+  /* Commission strip */
+  .commission-strip {
+    background: var(--gold-pale);
+    border-top: 1px solid var(--cream-dark);
+    border-bottom: 1px solid var(--cream-dark);
+    padding: 1.5rem 0;
+  }
+  .commission-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .commission-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .commission-inner h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .commission-sub {
+    font-size: 13px;
+    color: var(--text-mid);
+  }
+  .commission-btn {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .commission-btn:hover { background: var(--gold-muted); }
+</style>

@@ -1,0 +1,11 @@
+{
+  "name": "Spectral harmony",
+  "suite": "Harmony",
+  "type": "Generative",
+  "desc": "Build your harmonic language from the overtone series of a single fundamental.",
+  "prompt": "Choose one pitch. Derive all harmony from its first 16 partials.",
+  "color": "#b85c20",
+  "bgColor": "#faf0e6",
+  "cardNumber": "H-07",
+  "tier": "free"
+}

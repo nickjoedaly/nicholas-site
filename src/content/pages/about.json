@@ -1,0 +1,19 @@
+{
+  "pageType": "about",
+  "bio": "Nicholas is a composer and researcher whose work spans acoustic and electronic media. His compositions explore the intersections of technology, perception, and musical tradition.",
+  "artistStatement": "I am drawn to the boundaries between the familiar and the unknown — places where acoustic instruments meet electronic processes, where compositional tradition encounters new possibilities.",
+  "cv": [
+    {
+      "category": "Education",
+      "items": [
+        { "year": "2023", "title": "PhD in Composition", "detail": "University of London" }
+      ]
+    }
+  ],
+  "email": "nick@nickdalycreative.com",
+  "location": "London, UK",
+  "socialLinks": [
+    { "platform": "GitHub", "url": "https://github.com/nickjoedaly", "label": "nickjoedaly" },
+    { "platform": "SoundCloud", "url": "#", "label": "Nicholas Daly" }
+  ]
+}

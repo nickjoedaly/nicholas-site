@@ -1,0 +1,16 @@
+{
+  "pageType": "homepage",
+  "heroTitle": "Nicholas",
+  "heroSubtitle": "Composer & Researcher",
+  "featuredCompositionId": "meridian-lines",
+  "sections": [
+    { "type": "featured", "visible": true },
+    { "type": "catalog", "visible": true },
+    { "type": "bestiary", "visible": true },
+    { "type": "software", "visible": true },
+    { "type": "scholarly", "visible": true },
+    { "type": "writings", "visible": true },
+    { "type": "about", "visible": true },
+    { "type": "commission", "visible": true }
+  ]
+}

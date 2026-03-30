@@ -1,0 +1,61 @@
+{
+  "title": "Meridian Lines",
+  "subtitle": "for string quartet and electronics",
+  "year": 2024,
+  "duration": "14:30",
+  "movements": [
+    { "number": 1, "title": "Antemeridian", "duration": "ca. 5:00" },
+    { "number": 2, "title": "Fracture Zone", "duration": "ca. 4:30" },
+    { "number": 3, "title": "Convergence", "duration": "ca. 5:00" }
+  ],
+  "status": "published",
+  "visibility": "public",
+  "commission": "Latitude Ensemble",
+  "dedication": "for M.K.",
+  "premiere": "Mar 2024",
+  "instrumentation": "str qt + elec",
+  "instrumentationDetail": "2 violins, viola, violoncello, electronics (Max/MSP)",
+  "programNote": "A three-movement work exploring the boundaries between acoustic and electronic sound worlds. Each movement traces a different meridian — a line of convergence where opposing forces meet and transform.",
+  "tags": {
+    "character": ["Reflective", "Sonorous"],
+    "tonality": ["Modal"],
+    "tempo": ["Slow"],
+    "technique": ["Electronics"],
+    "instrumentation": ["Chamber", "Electronics"],
+    "difficulty": ["Advanced"]
+  },
+  "assets": [
+    { "title": "Full score", "type": "score", "meta": "PDF — 42 pages — v2.1", "purchasable": true, "browsable": true },
+    { "title": "Parts set", "type": "parts", "meta": "PDF — vln I, vln II, vla, vlc", "purchasable": true, "browsable": true },
+    { "title": "Electronics patch", "type": "electronics", "meta": "Max/MSP — v1.3", "purchasable": false, "browsable": false },
+    { "title": "Performance notes", "type": "performance-notes", "meta": "PDF — 6 pages", "purchasable": true, "browsable": false }
+  ],
+  "videos": [
+    { "title": "Premiere — Latitude Ensemble", "detail": "Wigmore Hall, London — Mar 2024", "badge": "Full performance" },
+    { "title": "Movement II excerpt — rehearsal", "detail": "Studio session — Feb 2024", "badge": "Excerpt" }
+  ],
+  "versions": [
+    { "title": "Meridian Lines", "subtitle": "String quartet + electronics — 2024", "badge": "Current", "isCurrent": true },
+    { "title": "Meridian Lines (acoustic)", "subtitle": "String quartet only — 2024", "badge": "Alternate", "isCurrent": false },
+    { "title": "Meridian Sketches", "subtitle": "Solo violin — 2022", "badge": "Origin", "isCurrent": false, "linkedId": "meridian-sketches" }
+  ],
+  "performances": [
+    { "date": "Mar 2024", "ensemble": "Latitude Ensemble", "venue": "Wigmore Hall", "city": "London", "country": "UK" },
+    { "date": "May 2024", "ensemble": "Boston Modern Orchestra Project", "venue": "Sanders Theatre", "city": "Cambridge" }
+  ],
+  "licensing": {
+    "available": true,
+    "category": "chamber",
+    "priceOverride": null,
+    "performanceFee": "License required",
+    "recordingFee": "Contact for terms",
+    "scorePrice": 45,
+    "partsRental": "Contact for quote",
+    "includes": ["score", "parts"],
+    "notes": "Electronics patch provided with performance license"
+  },
+  "technicalRequirements": "Max/MSP 8+ required for electronics. Laptop, audio interface (4 in / 2 out), 4 contact microphones, 2 speakers.",
+  "relatedWorks": [
+    { "compositionId": "five-ghazals", "connectionType": "shares-material", "label": "Shared harmonic language" }
+  ]
+}

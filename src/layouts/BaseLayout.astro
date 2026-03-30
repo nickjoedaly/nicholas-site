@@ -1,0 +1,72 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Nicholas — Composer & Researcher', description = 'Composer and researcher. Compositions, software, scholarly work, and writings.' } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content={description}>
+  <title>{title}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">Nicholas <span>Composer</span></a>
+  <ul class="nav-links">
+    <li><a href="/compositions">works</a></li>
+    <li><a href="/bestiary">bestiary</a></li>
+    <li><a href="/software">software</a></li>
+    <li><a href="/publications">research</a></li>
+    <li><a href="/about">about</a></li>
+    <li><a href="/commissions">commissions</a></li>
+  </ul>
+</nav>
+
+<div class="header-motif">
+  <svg viewBox="0 0 1400 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="3" x2="1400" y2="3" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="6" x2="1400" y2="6" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="9" x2="1400" y2="9" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="12" x2="1400" y2="12" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <line x1="0" y1="15" x2="1400" y2="15" stroke="#f5f0e8" stroke-width="0.3" opacity="0.06"/>
+    <ellipse cx="150" cy="9" rx="3" ry="2.2" fill="#c8963e" opacity="0.12"/>
+    <line x1="153" y1="9" x2="153" y2="2" stroke="#c8963e" stroke-width="0.5" opacity="0.12"/>
+    <ellipse cx="500" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/>
+    <ellipse cx="900" cy="12" rx="3" ry="2.2" fill="#c8963e" opacity="0.1"/>
+    <line x1="903" y1="12" x2="903" y2="5" stroke="#c8963e" stroke-width="0.5" opacity="0.1"/>
+    <ellipse cx="1250" cy="6" rx="3" ry="2.2" fill="none" stroke="#c8963e" stroke-width="0.5" opacity="0.08"/>
+  </svg>
+</div>
+
+<slot />
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="mailto:nick@nickdalycreative.com">email</a>
+    <span class="footer-sep">/</span>
+    <a href="#">instagram</a>
+    <span class="footer-sep">/</span>
+    <a href="#">youtube</a>
+    <span class="footer-sep">/</span>
+    <a href="https://github.com/nickjoedaly">github</a>
+    <span class="footer-sep">/</span>
+    <a href="#">soundcloud</a>
+  </div>
+  <p class="footer-copy">&copy; {year} Nicholas Daly</p>
+</footer>
+
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

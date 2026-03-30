@@ -1,0 +1,13 @@
+{
+  "scoreLicensing": {
+    "solo": 25,
+    "chamber": 50,
+    "largeEnsemble": 100,
+    "orchestral": 150
+  },
+  "bestiary": {
+    "digital": 20,
+    "physical": 35
+  },
+  "currency": "USD"
+}
