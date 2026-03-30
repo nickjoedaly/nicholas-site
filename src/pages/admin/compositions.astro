@@ -27,7 +27,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
       <button class="view-btn" data-view="json">JSON</button>
     </div>
     <button class="admin-btn">Export CSV</button>
-    <button class="admin-btn primary">+ New composition</button>
+    <button class="admin-btn primary" id="newCompBtn">+ New composition</button>
   </Fragment>
 
   <!-- Dashboard View -->
@@ -36,7 +36,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
       <div class="stat-card">
         <div class="stat-label">Total works</div>
         <div class="stat-val">{comps.length}</div>
-        <div class="stat-sub">{published} published this year</div>
+        <div class="stat-sub">{published} published</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Assets managed</div>
@@ -46,7 +46,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
       <div class="stat-card">
         <div class="stat-label">Status breakdown</div>
         <div class="stat-val">{published}/{drafts}/{wip}</div>
-        <div class="stat-sub">published / draft / in progress</div>
+        <div class="stat-sub">published / draft / wip</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Performances</div>
@@ -89,7 +89,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
             const allTags = Object.values(c.tags).flat();
             const s = statusMap[c.status] || statusMap.draft;
             return (
-              <tr data-id={c.id} data-status={c.status} data-year={String(c.year)} data-title={c.title.toLowerCase()} data-instr={c.instrumentation.toLowerCase()}>
+              <tr data-id={c.id} data-status={c.status} data-year={String(c.year)} data-title={c.title.toLowerCase()} data-instr={c.instrumentation.toLowerCase()} class="comp-row">
                 <td class="title-cell">{c.title}</td>
                 <td class="mono" style="font-size:11px">{c.instrumentation}</td>
                 <td class="mono" style="font-size:11px">{c.year}</td>
@@ -118,14 +118,8 @@ const statusMap: Record<string, { cls: string; label: string }> = {
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Subtitle</th>
-            <th>Year</th>
-            <th>Duration</th>
-            <th>Status</th>
-            <th>Instrumentation</th>
-            <th>Commission</th>
-            <th>Premiere</th>
+            <th>Title</th><th>Subtitle</th><th>Year</th><th>Duration</th>
+            <th>Status</th><th>Instrumentation</th><th>Commission</th><th>Premiere</th>
           </tr>
         </thead>
         <tbody>
@@ -148,14 +142,162 @@ const statusMap: Record<string, { cls: string; label: string }> = {
 
   <!-- JSON View -->
   <div id="view-json" style="display:none">
-    <div class="json-view">
-      <pre id="jsonContent"></pre>
+    <div class="json-view"><pre id="jsonContent"></pre></div>
+  </div>
+
+  <!-- Editor Panel (slide-over) -->
+  <div class="editor-overlay" id="editorOverlay">
+    <div class="editor-panel" id="editorPanel">
+      <div class="editor-header">
+        <h2 class="editor-title" id="editorTitle">Edit composition</h2>
+        <button class="editor-close" id="editorClose">&times;</button>
+      </div>
+      <form class="editor-form" id="editorForm">
+        <input type="hidden" name="id" id="ed-id" />
+
+        <div class="ed-section">
+          <div class="ed-section-label">Core details</div>
+          <div class="ed-grid">
+            <div class="ed-field full">
+              <label class="ed-label">Title *</label>
+              <input class="ed-input" name="title" id="ed-title" required />
+            </div>
+            <div class="ed-field full">
+              <label class="ed-label">Subtitle</label>
+              <input class="ed-input" name="subtitle" id="ed-subtitle" placeholder="e.g. for string quartet and electronics" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Year *</label>
+              <input class="ed-input" name="year" id="ed-year" type="number" required />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Duration *</label>
+              <input class="ed-input" name="duration" id="ed-duration" placeholder="14:30" required />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Status *</label>
+              <select class="ed-select" name="status" id="ed-status">
+                <option value="draft">Draft</option>
+                <option value="wip">In progress</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Visibility</label>
+              <select class="ed-select" name="visibility" id="ed-visibility">
+                <option value="public">Public</option>
+                <option value="unlisted">Unlisted</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
+            <div class="ed-field full">
+              <label class="ed-label">Instrumentation *</label>
+              <input class="ed-input" name="instrumentation" id="ed-instrumentation" placeholder="str qt + elec" required />
+            </div>
+            <div class="ed-field full">
+              <label class="ed-label">Instrumentation (detailed)</label>
+              <input class="ed-input" name="instrumentationDetail" id="ed-instrumentationDetail" placeholder="2 violins, viola, violoncello, electronics" />
+            </div>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <div class="ed-section-label">Context</div>
+          <div class="ed-grid">
+            <div class="ed-field">
+              <label class="ed-label">Commission</label>
+              <input class="ed-input" name="commission" id="ed-commission" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Dedication</label>
+              <input class="ed-input" name="dedication" id="ed-dedication" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Premiere</label>
+              <input class="ed-input" name="premiere" id="ed-premiere" placeholder="Mar 2024" />
+            </div>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <div class="ed-section-label">Program note</div>
+          <textarea class="ed-textarea" name="programNote" id="ed-programNote" rows="6" placeholder="Program note text..."></textarea>
+        </div>
+
+        <div class="ed-section">
+          <div class="ed-section-label">Tags</div>
+          <div class="ed-grid">
+            <div class="ed-field">
+              <label class="ed-label">Character</label>
+              <input class="ed-input" name="tags-character" id="ed-tags-character" placeholder="Reflective, Sonorous" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Tonality</label>
+              <input class="ed-input" name="tags-tonality" id="ed-tags-tonality" placeholder="Modal, Tonal" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Tempo</label>
+              <input class="ed-input" name="tags-tempo" id="ed-tags-tempo" placeholder="Slow, Varied" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Technique</label>
+              <input class="ed-input" name="tags-technique" id="ed-tags-technique" placeholder="Electronics, Extended" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Instrumentation</label>
+              <input class="ed-input" name="tags-instrumentation" id="ed-tags-instrumentation" placeholder="Chamber, Electronics" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Difficulty</label>
+              <input class="ed-input" name="tags-difficulty" id="ed-tags-difficulty" placeholder="Advanced" />
+            </div>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <div class="ed-section-label">Licensing</div>
+          <div class="ed-grid">
+            <div class="ed-field">
+              <label class="ed-label">Category</label>
+              <select class="ed-select" name="licensing-category" id="ed-licensing-category">
+                <option value="solo">Solo</option>
+                <option value="chamber">Chamber</option>
+                <option value="largeEnsemble">Large Ensemble</option>
+                <option value="orchestral">Orchestral</option>
+              </select>
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Score price ($)</label>
+              <input class="ed-input" name="licensing-scorePrice" id="ed-licensing-scorePrice" type="number" placeholder="45" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Performance fee</label>
+              <input class="ed-input" name="licensing-performanceFee" id="ed-licensing-performanceFee" placeholder="License required" />
+            </div>
+            <div class="ed-field">
+              <label class="ed-label">Recording fee</label>
+              <input class="ed-input" name="licensing-recordingFee" id="ed-licensing-recordingFee" placeholder="Contact for terms" />
+            </div>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <div class="ed-section-label">Technical</div>
+          <textarea class="ed-textarea" name="technicalRequirements" id="ed-technicalRequirements" rows="3" placeholder="Technical requirements..."></textarea>
+        </div>
+
+        <div class="editor-actions">
+          <button type="submit" class="admin-btn primary" id="editorSave">Save composition</button>
+          <button type="button" class="admin-btn" id="editorCancel">Cancel</button>
+          <button type="button" class="admin-btn danger" id="editorDelete" style="margin-left:auto;display:none">Delete</button>
+        </div>
+      </form>
     </div>
   </div>
 </AdminLayout>
 
 <script define:vars={{ comps }}>
-// View switching
+// ── View switching ──
 document.querySelectorAll('.view-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -164,48 +306,285 @@ document.querySelectorAll('.view-btn').forEach(function(btn) {
     document.getElementById('view-dashboard').style.display = view === 'dashboard' ? '' : 'none';
     document.getElementById('view-spreadsheet').style.display = view === 'spreadsheet' ? '' : 'none';
     document.getElementById('view-json').style.display = view === 'json' ? '' : 'none';
-
-    // Populate JSON view on first open
     if (view === 'json') {
       var pre = document.getElementById('jsonContent');
-      if (pre && !pre.innerHTML) {
-        pre.innerHTML = syntaxHighlight(JSON.stringify(comps, null, 2));
-      }
+      if (pre && !pre.innerHTML) pre.innerHTML = syntaxHighlight(JSON.stringify(comps, null, 2));
     }
   });
 });
 
-// JSON syntax highlighting
 function syntaxHighlight(json) {
   return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
     var cls = 'json-number';
-    if (/^"/.test(match)) {
-      if (/:$/.test(match)) { cls = 'json-key'; }
-      else { cls = 'json-string'; }
-    } else if (/true|false/.test(match)) { cls = 'json-bool'; }
+    if (/^"/.test(match)) { cls = /:$/.test(match) ? 'json-key' : 'json-string'; }
+    else if (/true|false/.test(match)) { cls = 'json-bool'; }
     return '<span class="' + cls + '">' + match + '</span>';
   });
 }
 
-// Dashboard search and filter
+// ── Table search/filter ──
 var searchInput = document.getElementById('adminSearch');
 var statusFilter = document.getElementById('statusFilter');
 var yearFilter = document.getElementById('yearFilter');
-
 function filterTable() {
   var search = searchInput ? searchInput.value.toLowerCase() : '';
   var status = statusFilter ? statusFilter.value : '';
   var year = yearFilter ? yearFilter.value : '';
-
   document.querySelectorAll('#compTableBody tr').forEach(function(row) {
-    var matchSearch = !search || row.dataset.title.indexOf(search) > -1 || row.dataset.instr.indexOf(search) > -1;
-    var matchStatus = !status || row.dataset.status === status;
-    var matchYear = !year || row.dataset.year === year;
-    row.style.display = matchSearch && matchStatus && matchYear ? '' : 'none';
+    var m1 = !search || row.dataset.title.indexOf(search) > -1 || row.dataset.instr.indexOf(search) > -1;
+    var m2 = !status || row.dataset.status === status;
+    var m3 = !year || row.dataset.year === year;
+    row.style.display = m1 && m2 && m3 ? '' : 'none';
   });
 }
-
 searchInput?.addEventListener('input', filterTable);
 statusFilter?.addEventListener('change', filterTable);
 yearFilter?.addEventListener('change', filterTable);
+
+// ── Editor Panel ──
+var overlay = document.getElementById('editorOverlay');
+var panel = document.getElementById('editorPanel');
+var form = document.getElementById('editorForm');
+var isNewMode = false;
+
+function csvToArray(str) {
+  return str ? str.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [];
+}
+function arrayToCsv(arr) {
+  return (arr || []).join(', ');
+}
+
+function openEditor(compData) {
+  isNewMode = !compData;
+  document.getElementById('editorTitle').textContent = isNewMode ? 'New composition' : 'Edit: ' + (compData?.title || '');
+  document.getElementById('editorDelete').style.display = isNewMode ? 'none' : '';
+  document.getElementById('editorSave').textContent = isNewMode ? 'Create composition' : 'Save changes';
+
+  // Fill form
+  var d = compData || {};
+  document.getElementById('ed-id').value = d.id || '';
+  document.getElementById('ed-title').value = d.title || '';
+  document.getElementById('ed-subtitle').value = d.subtitle || '';
+  document.getElementById('ed-year').value = d.year || new Date().getFullYear();
+  document.getElementById('ed-duration').value = d.duration || '';
+  document.getElementById('ed-status').value = d.status || 'draft';
+  document.getElementById('ed-visibility').value = d.visibility || 'public';
+  document.getElementById('ed-instrumentation').value = d.instrumentation || '';
+  document.getElementById('ed-instrumentationDetail').value = d.instrumentationDetail || '';
+  document.getElementById('ed-commission').value = d.commission || '';
+  document.getElementById('ed-dedication').value = d.dedication || '';
+  document.getElementById('ed-premiere').value = d.premiere || '';
+  document.getElementById('ed-programNote').value = d.programNote || '';
+  document.getElementById('ed-technicalRequirements').value = d.technicalRequirements || '';
+
+  // Tags
+  var tags = d.tags || {};
+  document.getElementById('ed-tags-character').value = arrayToCsv(tags.character);
+  document.getElementById('ed-tags-tonality').value = arrayToCsv(tags.tonality);
+  document.getElementById('ed-tags-tempo').value = arrayToCsv(tags.tempo);
+  document.getElementById('ed-tags-technique').value = arrayToCsv(tags.technique);
+  document.getElementById('ed-tags-instrumentation').value = arrayToCsv(tags.instrumentation);
+  document.getElementById('ed-tags-difficulty').value = arrayToCsv(tags.difficulty);
+
+  // Licensing
+  var lic = d.licensing || {};
+  document.getElementById('ed-licensing-category').value = lic.category || 'chamber';
+  document.getElementById('ed-licensing-scorePrice').value = lic.scorePrice || '';
+  document.getElementById('ed-licensing-performanceFee').value = lic.performanceFee || '';
+  document.getElementById('ed-licensing-recordingFee').value = lic.recordingFee || '';
+
+  overlay.classList.add('open');
+}
+
+function closeEditor() {
+  overlay.classList.remove('open');
+}
+
+function buildPayload() {
+  var scorePrice = document.getElementById('ed-licensing-scorePrice').value;
+  return {
+    title: document.getElementById('ed-title').value,
+    subtitle: document.getElementById('ed-subtitle').value || undefined,
+    year: parseInt(document.getElementById('ed-year').value),
+    duration: document.getElementById('ed-duration').value,
+    status: document.getElementById('ed-status').value,
+    visibility: document.getElementById('ed-visibility').value,
+    instrumentation: document.getElementById('ed-instrumentation').value,
+    instrumentationDetail: document.getElementById('ed-instrumentationDetail').value || undefined,
+    commission: document.getElementById('ed-commission').value || undefined,
+    dedication: document.getElementById('ed-dedication').value || undefined,
+    premiere: document.getElementById('ed-premiere').value || undefined,
+    programNote: document.getElementById('ed-programNote').value || undefined,
+    technicalRequirements: document.getElementById('ed-technicalRequirements').value || undefined,
+    tags: {
+      character: csvToArray(document.getElementById('ed-tags-character').value),
+      tonality: csvToArray(document.getElementById('ed-tags-tonality').value),
+      tempo: csvToArray(document.getElementById('ed-tags-tempo').value),
+      technique: csvToArray(document.getElementById('ed-tags-technique').value),
+      instrumentation: csvToArray(document.getElementById('ed-tags-instrumentation').value),
+      difficulty: csvToArray(document.getElementById('ed-tags-difficulty').value),
+    },
+    licensing: {
+      available: true,
+      category: document.getElementById('ed-licensing-category').value,
+      scorePrice: scorePrice ? parseFloat(scorePrice) : null,
+      priceOverride: null,
+      performanceFee: document.getElementById('ed-licensing-performanceFee').value || undefined,
+      recordingFee: document.getElementById('ed-licensing-recordingFee').value || undefined,
+    },
+  };
+}
+
+// Click row to edit
+document.querySelectorAll('.comp-row').forEach(function(row) {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', function() {
+    var id = row.dataset.id;
+    var comp = comps.find(function(c) { return c.id === id; });
+    if (comp) openEditor(comp);
+  });
+});
+
+// New composition button
+document.getElementById('newCompBtn')?.addEventListener('click', function() {
+  openEditor(null);
+});
+
+// Close
+document.getElementById('editorClose')?.addEventListener('click', closeEditor);
+document.getElementById('editorCancel')?.addEventListener('click', closeEditor);
+overlay?.addEventListener('click', function(e) {
+  if (e.target === overlay) closeEditor();
+});
+
+// Save
+form?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var id = document.getElementById('ed-id').value;
+  var payload = buildPayload();
+
+  try {
+    var url, method;
+    if (isNewMode) {
+      payload.id = payload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      url = '/api/admin/collections/compositions';
+      method = 'POST';
+    } else {
+      url = '/api/admin/collections/compositions/' + id;
+      method = 'PUT';
+    }
+
+    var res = await fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      var err = await res.json();
+      alert('Error: ' + (err.error || 'Failed to save'));
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
+// Delete
+document.getElementById('editorDelete')?.addEventListener('click', async function() {
+  var id = document.getElementById('ed-id').value;
+  if (!id) return;
+  if (!confirm('Delete "' + document.getElementById('ed-title').value + '"? This cannot be undone.')) return;
+
+  try {
+    var res = await fetch('/api/admin/collections/compositions/' + id, { method: 'DELETE' });
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      alert('Failed to delete');
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
 </script>
+
+<style is:global>
+  /* Editor overlay */
+  .editor-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(14,27,46,0.4); z-index: 100;
+    display: none; align-items: stretch; justify-content: flex-end;
+  }
+  .editor-overlay.open { display: flex; }
+
+  .editor-panel {
+    width: 600px; max-width: 90vw; background: var(--cream);
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: -4px 0 30px rgba(14,27,46,0.15);
+  }
+
+  .editor-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; background: white;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .editor-title { font-family: 'Source Serif 4', serif; font-size: 18px; font-weight: 600; }
+  .editor-close {
+    background: none; border: none; font-size: 24px;
+    color: var(--text-light); cursor: pointer; padding: 0 4px;
+  }
+  .editor-close:hover { color: var(--text-dark); }
+
+  .editor-form {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .ed-section { margin-bottom: 16px; }
+  .ed-section-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--gold-muted); margin-bottom: 10px;
+    padding-bottom: 4px; border-bottom: 1px solid var(--cream-dark);
+  }
+  .ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ed-field { display: flex; flex-direction: column; gap: 3px; }
+  .ed-field.full { grid-column: 1 / -1; }
+  .ed-label {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-light);
+  }
+  .ed-input, .ed-select {
+    padding: 7px 10px; border: 1px solid var(--cream-dark);
+    border-radius: 4px; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; outline: none; background: white;
+  }
+  .ed-input:focus, .ed-select:focus { border-color: var(--gold); }
+  .ed-select {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-mid); cursor: pointer;
+  }
+  .ed-textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--cream-dark);
+    border-radius: 4px; font-family: 'Source Serif 4', serif;
+    font-size: 13px; line-height: 1.6; outline: none; resize: vertical;
+  }
+  .ed-textarea:focus { border-color: var(--gold); }
+
+  .editor-actions {
+    display: flex; gap: 8px; padding: 16px 24px;
+    border-top: 1px solid var(--cream-dark); background: white;
+  }
+  .admin-btn.danger {
+    background: var(--red-bg); color: var(--red-text);
+    border-color: var(--red-bg);
+  }
+  .admin-btn.danger:hover { background: #f5d0d0; }
+
+  /* Make table rows clickable */
+  .comp-row { cursor: pointer; }
+  .comp-row:hover { background: rgba(200,150,62,0.05); }
+</style>
