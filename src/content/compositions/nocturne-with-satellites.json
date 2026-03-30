@@ -1,0 +1,20 @@
+{
+  "title": "Nocturne with Satellites",
+  "subtitle": "for violin and live electronics",
+  "year": 2021,
+  "duration": "9:40",
+  "status": "published",
+  "instrumentation": "vln + elec",
+  "tags": {
+    "character": ["Mysterious", "Sonorous"],
+    "tonality": ["Tonal"],
+    "tempo": ["Slow"],
+    "technique": ["Electronics", "Extended"],
+    "instrumentation": ["Solo", "Electronics"],
+    "difficulty": ["Advanced"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "solo"
+  }
+}

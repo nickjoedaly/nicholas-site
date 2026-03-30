@@ -1,0 +1,19 @@
+{
+  "title": "Threshold Music",
+  "subtitle": "for string quartet",
+  "year": 2020,
+  "duration": "16:00",
+  "status": "published",
+  "instrumentation": "str qt",
+  "tags": {
+    "character": ["Reflective", "Sonorous"],
+    "tonality": ["Modal"],
+    "tempo": ["Slow"],
+    "instrumentation": ["Chamber"],
+    "difficulty": ["Intermediate"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "chamber"
+  }
+}

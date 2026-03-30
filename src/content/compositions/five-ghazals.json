@@ -1,0 +1,19 @@
+{
+  "title": "Five Ghazals",
+  "subtitle": "for soprano, oud, and cello",
+  "year": 2023,
+  "duration": "18:45",
+  "status": "published",
+  "instrumentation": "sop, oud, vlc",
+  "tags": {
+    "character": ["Melodic", "Mysterious"],
+    "tonality": ["Non-Western"],
+    "tempo": ["Medium"],
+    "instrumentation": ["Chamber", "Voice"],
+    "difficulty": ["Intermediate"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "chamber"
+  }
+}

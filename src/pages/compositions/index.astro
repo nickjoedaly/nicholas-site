@@ -1,0 +1,361 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allCompositions = await getCollection('compositions');
+const compositions = allCompositions
+  .filter(c => c.data.status === 'published' && c.data.visibility !== 'private')
+  .sort((a, b) => b.data.year - a.data.year);
+
+// Collect all unique tags per category for the filter bar
+const filterCategories: Record<string, string[]> = {
+  character: [], tonality: [], tempo: [],
+  technique: [], instrumentation: [], difficulty: [],
+};
+
+for (const comp of compositions) {
+  for (const [cat, values] of Object.entries(comp.data.tags)) {
+    const catKey = cat as keyof typeof filterCategories;
+    for (const val of values) {
+      if (!filterCategories[catKey].includes(val)) {
+        filterCategories[catKey].push(val);
+      }
+    }
+  }
+}
+---
+
+<BaseLayout title="Compositions — Nicholas Composer">
+  <div class="hero-strip">
+    <h1>Compositions</h1>
+    <p>Browse the catalog — filter by character, instrumentation, technique, and more</p>
+  </div>
+
+  <div class="content">
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" placeholder="Search by title, instrument, year..." id="searchInput" />
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="az">A — Z</option>
+        <option value="duration">Duration</option>
+      </select>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+      {Object.entries(filterCategories).map(([cat, values]) => (
+        values.length > 0 && (
+          <div class="filter-row">
+            <span class="filter-label">{cat}</span>
+            <div class="filter-pills">
+              {values.map(val => (
+                <button class="filter-pill" data-cat={cat} data-val={val}>{val}</button>
+              ))}
+            </div>
+          </div>
+        )
+      ))}
+    </div>
+    <div class="active-filters" id="activeFilters"></div>
+    <div class="results-count" id="resultsCount"></div>
+    <div class="comp-grid" id="compGrid"></div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ compositions: compositions.map(c => ({ id: c.id, ...c.data })), filterCategories }}>
+var activeFilters = {};
+
+// Attach click handlers to server-rendered pills
+document.querySelectorAll('.filter-pill').forEach(function(pill) {
+  pill.addEventListener('click', function() {
+    var cat = pill.dataset.cat;
+    var val = pill.dataset.val;
+    if (!activeFilters[cat]) activeFilters[cat] = [];
+    var idx = activeFilters[cat].indexOf(val);
+    if (idx > -1) { activeFilters[cat].splice(idx, 1); pill.classList.remove('active'); }
+    else { activeFilters[cat].push(val); pill.classList.add('active'); }
+    renderActiveFilters(); filterAndRender();
+  });
+});
+
+window.removeFilter = function(cat, val) {
+  if (activeFilters[cat]) {
+    var idx = activeFilters[cat].indexOf(val);
+    if (idx > -1) activeFilters[cat].splice(idx, 1);
+  }
+  document.querySelectorAll('.filter-pill[data-cat="' + cat + '"][data-val="' + val + '"]').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  renderActiveFilters(); filterAndRender();
+};
+
+function renderActiveFilters() {
+  var container = document.getElementById('activeFilters');
+  var html = '';
+  Object.entries(activeFilters).forEach(function(entry) {
+    var cat = entry[0], vals = entry[1];
+    vals.forEach(function(v) {
+      html += '<span class="active-tag" onclick="removeFilter(\'' + cat + '\',\'' + v + '\')">' + v + ' <span class="x">\u00d7</span></span>';
+    });
+  });
+  container.innerHTML = html;
+}
+
+function generateWaveform() {
+  var bars = '';
+  for (var i = 0; i < 45; i++) {
+    bars += '<div class="wave-bar" style="height:' + Math.round(4 + Math.random() * 22) + 'px"></div>';
+  }
+  return bars;
+}
+
+function filterAndRender() {
+  var search = document.getElementById('searchInput').value.toLowerCase();
+  var sortVal = document.getElementById('sortSelect').value;
+
+  var filtered = compositions.filter(function(c) {
+    if (search && c.title.toLowerCase().indexOf(search) === -1
+        && (c.subtitle || '').toLowerCase().indexOf(search) === -1
+        && String(c.year).indexOf(search) === -1
+        && c.instrumentation.toLowerCase().indexOf(search) === -1) return false;
+    for (var cat in activeFilters) {
+      if (activeFilters[cat].length > 0) {
+        var compTags = c.tags[cat] || [];
+        var match = false;
+        for (var i = 0; i < activeFilters[cat].length; i++) {
+          if (compTags.indexOf(activeFilters[cat][i]) > -1) { match = true; break; }
+        }
+        if (!match) return false;
+      }
+    }
+    return true;
+  });
+
+  if (sortVal === 'newest') filtered.sort(function(a,b) { return b.year - a.year; });
+  else if (sortVal === 'oldest') filtered.sort(function(a,b) { return a.year - b.year; });
+  else if (sortVal === 'az') filtered.sort(function(a,b) { return a.title.localeCompare(b.title); });
+  else if (sortVal === 'duration') filtered.sort(function(a,b) {
+    var da = a.duration.split(':').reduce(function(m,s){ return parseInt(m)*60+parseInt(s); });
+    var db = b.duration.split(':').reduce(function(m,s){ return parseInt(m)*60+parseInt(s); });
+    return db - da;
+  });
+
+  renderCards(filtered);
+}
+
+function renderCards(comps) {
+  var grid = document.getElementById('compGrid');
+  grid.innerHTML = comps.map(function(c) {
+    var allTags = [];
+    Object.values(c.tags).forEach(function(vals) {
+      vals.forEach(function(v) { allTags.push('<span class="card-tag">' + v + '</span>'); });
+    });
+
+    var hasAudio = c.assets && c.assets.some(function(a) { return a.type === 'audio' || a.type === 'recording'; });
+    var hasScore = c.assets && c.assets.some(function(a) { return a.type === 'score'; });
+    var licenseText = c.licensing && c.licensing.available ? (c.licensing.scorePrice ? '$' + c.licensing.scorePrice : 'Licensing available') : '';
+
+    return '<a href="/compositions/' + c.id + '" class="comp-card">' +
+      '<div class="card-header">' +
+        '<div class="card-year">' + c.year + '</div>' +
+        '<div class="card-title">' + c.title + '</div>' +
+        (c.subtitle ? '<div class="card-subtitle">' + c.subtitle + '</div>' : '') +
+        '<div class="card-meta"><span>' + c.duration + '</span></div>' +
+      '</div>' +
+      '<div class="card-tags">' + allTags.join('') + '</div>' +
+      (hasAudio ? '<div class="card-audio">' +
+        '<button class="play-btn"><div class="play-tri"></div></button>' +
+        '<div class="waveform">' + generateWaveform() + '</div>' +
+        '<span class="audio-dur">' + c.duration + '</span>' +
+      '</div>' : '') +
+      (hasScore || licenseText ? '<div class="card-score-preview">' +
+        '<div class="score-icon"><div class="score-lines"><div class="score-line"></div><div class="score-line"></div><div class="score-line"></div><div class="score-line"></div><div class="score-line"></div></div></div>' +
+        '<span>Score available</span>' +
+        (licenseText ? '<span class="license-badge">' + licenseText + '</span>' : '') +
+      '</div>' : '') +
+    '</a>';
+  }).join('');
+
+  document.getElementById('resultsCount').textContent = 'Showing ' + comps.length + ' composition' + (comps.length !== 1 ? 's' : '');
+}
+
+document.getElementById('searchInput').addEventListener('input', filterAndRender);
+document.getElementById('sortSelect').addEventListener('change', filterAndRender);
+filterAndRender();
+</script>
+
+<style is:global>
+  /* Hero strip */
+  .hero-strip {
+    background: var(--navy);
+    padding: 2rem 2.5rem 2.5rem;
+    border-bottom: 2px solid var(--gold);
+  }
+  .hero-strip h1 {
+    font-size: 34px;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .hero-strip p {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dark);
+    opacity: 0.6;
+    letter-spacing: 0.04em;
+  }
+
+  /* Content */
+  .content { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;
+  }
+  .search-box { position: relative; flex: 1; max-width: 360px; }
+  .search-box input {
+    width: 100%; padding: 10px 14px 10px 36px;
+    border: 1px solid var(--cream-dark); border-radius: 6px;
+    background: white; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text-dark); outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box input:focus { border-color: var(--gold); }
+  .search-box::before {
+    content: '\2315'; position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); font-size: 16px; color: var(--text-light);
+  }
+  .sort-select {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 8px 12px; border: 1px solid var(--cream-dark);
+    border-radius: 6px; background: white; color: var(--text-mid);
+    cursor: pointer; outline: none;
+  }
+
+  /* Filter bar — always-visible grouped pills */
+  .filter-bar {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 1.5rem; padding: 16px 20px;
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+  }
+  .filter-row { display: flex; align-items: baseline; gap: 10px; }
+  .filter-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-light); min-width: 100px; flex-shrink: 0;
+  }
+  .filter-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .filter-pill {
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--cream-dark); background: transparent;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-mid); cursor: pointer; transition: all 0.15s;
+  }
+  .filter-pill:hover { border-color: var(--gold); color: var(--text-dark); }
+  .filter-pill.active {
+    background: var(--gold-pale); border-color: var(--gold);
+    color: var(--gold-muted); font-weight: 500;
+  }
+
+  /* Active filters */
+  .active-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+  .active-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 4px; font-size: 11px;
+    font-family: 'DM Mono', monospace; letter-spacing: 0.02em;
+    cursor: pointer; background: var(--gold-pale); color: var(--gold-muted);
+    transition: opacity 0.15s;
+  }
+  .active-tag:hover { opacity: 0.7; }
+  .active-tag .x { opacity: 0.5; font-size: 13px; }
+
+  /* Results count */
+  .results-count {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-light); margin-bottom: 1rem; letter-spacing: 0.03em;
+  }
+
+  /* Composition grid */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .comp-card {
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+    overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer; display: block; text-decoration: none; color: inherit;
+  }
+  .comp-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .card-header { padding: 1.25rem 1.25rem 0.75rem; }
+  .card-year {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-light); letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .card-title {
+    font-family: 'Source Serif 4', serif; font-size: 19px;
+    font-weight: 600; color: var(--text-dark); margin-bottom: 2px; line-height: 1.3;
+  }
+  .card-subtitle { font-size: 13px; color: var(--text-mid); margin-bottom: 10px; }
+  .card-meta {
+    display: flex; gap: 12px;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--text-light); letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 1.25rem 0.75rem; }
+  .card-tag {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    padding: 2px 8px; border-radius: 3px; letter-spacing: 0.02em;
+    background: var(--tag-bg); color: var(--tag-color);
+  }
+  .card-audio {
+    border-top: 1px solid var(--cream-mid); padding: 10px 1.25rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .play-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid var(--navy); background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .play-btn:hover { background: var(--navy); }
+  .play-btn:hover .play-tri { border-left-color: var(--cream); }
+  .play-tri {
+    width: 0; height: 0;
+    border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+    border-left: 10px solid var(--navy); margin-left: 2px;
+  }
+  .waveform { flex: 1; height: 28px; display: flex; align-items: center; gap: 1.5px; }
+  .wave-bar {
+    width: 2px; background: var(--navy-light); border-radius: 1px;
+    opacity: 0.25; transition: opacity 0.2s;
+  }
+  .comp-card:hover .wave-bar { opacity: 0.45; }
+  .audio-dur {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--text-light); flex-shrink: 0;
+  }
+  .card-score-preview {
+    border-top: 1px solid var(--cream-mid); padding: 10px 1.25rem;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-mid);
+  }
+  .score-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+  .score-lines { display: flex; flex-direction: column; gap: 2px; }
+  .score-line { width: 14px; height: 1px; background: var(--text-light); }
+  .license-badge {
+    margin-left: auto; padding: 2px 8px; border-radius: 3px;
+    background: var(--gold-pale); color: var(--gold-muted);
+    font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 768px) {
+    .hero-strip { padding: 1.5rem; }
+    .hero-strip h1 { font-size: 26px; }
+    .content { padding: 1rem 1rem 2rem; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-box { max-width: 100%; }
+  }
+</style>

@@ -1,0 +1,20 @@
+{
+  "title": "Pulse Garden",
+  "subtitle": "for percussion ensemble",
+  "year": 2022,
+  "duration": "11:00",
+  "status": "published",
+  "instrumentation": "perc ens (6 players)",
+  "tags": {
+    "character": ["Energetic", "Propulsive"],
+    "tonality": ["Modal"],
+    "tempo": ["Fast"],
+    "technique": ["Rhythmic", "Improvisation"],
+    "instrumentation": ["Chamber"],
+    "difficulty": ["Intermediate"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "chamber"
+  }
+}

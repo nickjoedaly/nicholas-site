@@ -1,0 +1,20 @@
+{
+  "title": "Glass Topography",
+  "subtitle": "for solo piano",
+  "year": 2022,
+  "duration": "8:20",
+  "status": "published",
+  "instrumentation": "solo pno",
+  "tags": {
+    "character": ["Reflective"],
+    "tonality": ["Atonal"],
+    "tempo": ["Slow"],
+    "technique": ["Extended"],
+    "instrumentation": ["Solo"],
+    "difficulty": ["Approachable"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "solo"
+  }
+}

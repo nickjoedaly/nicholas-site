@@ -1,0 +1,408 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const compositions = await getCollection('compositions');
+  return compositions.map(comp => ({ params: { id: comp.id }, props: { comp } }));
+}
+
+const { comp } = Astro.props;
+const d = comp.data;
+const allTags = [...d.tags.character, ...d.tags.tonality, ...d.tags.tempo, ...d.tags.technique, ...d.tags.instrumentation, ...d.tags.difficulty];
+
+// For the network graph, get all compositions to find relationships
+const allComps = await getCollection('compositions');
+const otherComps = allComps.filter(c => c.id !== comp.id && c.data.status === 'published');
+---
+
+<BaseLayout title={`${d.title} — Nicholas Composer`}>
+  <div class="breadcrumb">
+    <a href="/compositions">Catalog</a><span class="sep">/</span><span class="current">{d.title}</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-inner container">
+      <div>
+        <h1>{d.title}</h1>
+        {d.subtitle && <div class="hero-sub">{d.subtitle}</div>}
+        <div class="hero-meta">
+          <div class="hm-item"><span class="hm-label">Year</span><span class="hm-val">{d.year}</span></div>
+          <div class="hm-item"><span class="hm-label">Duration</span><span class="hm-val">{d.duration}</span></div>
+          {d.movements.length > 0 && <div class="hm-item"><span class="hm-label">Movements</span><span class="hm-val">{d.movements.length}</span></div>}
+          {d.premiere && <div class="hm-item"><span class="hm-label">Premiere</span><span class="hm-val">{d.premiere}</span></div>}
+        </div>
+        <div class="hero-tags">
+          {allTags.map(tag => <span class="hero-tag">{tag}</span>)}
+        </div>
+      </div>
+      <div class="hero-right">
+        {d.licensing?.available && <button class="hero-btn primary">License this work</button>}
+        <button class="hero-btn secondary">Request a perusal score</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="main-layout">
+      <div>
+        {/* Program note */}
+        {d.programNote && (
+          <div class="section">
+            <div class="section-head"><span class="section-title">Program note</span></div>
+            <div class="program-note">
+              {d.programNote.split('\n\n').map(p => <p>{p}</p>)}
+            </div>
+          </div>
+        )}
+
+        {/* Scores & parts */}
+        {d.assets.length > 0 && (
+          <div class="section">
+            <div class="section-head">
+              <span class="section-title">Scores & parts</span>
+              <span class="section-count">{d.assets.length} files</span>
+            </div>
+            <div class="score-grid">
+              {d.assets.map(asset => (
+                <div class="score-card">
+                  <div class="score-preview">
+                    <div class="staff-lines">
+                      <div /><div /><div /><div /><div />
+                    </div>
+                  </div>
+                  <div class="sc-title">{asset.title}</div>
+                  <div class="sc-meta">{asset.meta}</div>
+                  <div class="sc-actions">
+                    {asset.browsable && <a class="sc-act" href="#">Preview</a>}
+                    {asset.purchasable && <a class="sc-act primary" href="#">Download</a>}
+                    {!asset.browsable && !asset.purchasable && <span class="sc-act">Included with license</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Videos */}
+        {d.videos.length > 0 && (
+          <div class="section">
+            <div class="section-head">
+              <span class="section-title">Video</span>
+              <span class="section-count">{d.videos.length} recordings</span>
+            </div>
+            <div class="video-grid">
+              {d.videos.map(video => (
+                <div class="video-card">
+                  <div class="video-thumb">
+                    <div class="vp-icon"><div class="vp-tri" /></div>
+                    <span class="v-badge">{video.badge}</span>
+                  </div>
+                  <div class="v-info">
+                    <div class="v-title">{video.title}</div>
+                    <div class="v-detail">{video.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Versions */}
+        {d.versions.length > 0 && (
+          <div class="section">
+            <div class="section-head"><span class="section-title">Versions & arrangements</span></div>
+            <div class="section-subtitle">Works derived from or leading to this composition</div>
+            <div class="versions-box">
+              {d.versions.map((v, i) => (
+                <div class="v-branch">
+                  {i > 0 && (
+                    <div class="v-indent" style={`width:${Math.min(i * 24, 48)}px`}>
+                      <svg width={Math.min(i * 24, 48)} height="40" style="overflow:visible">
+                        <path d={`M0,0 L0,20 L${Math.min(i * 24, 48)},20`} fill="none" stroke="#e8e0d2" stroke-width="2"/>
+                      </svg>
+                    </div>
+                  )}
+                  <div class={`vn${v.isCurrent ? ' current' : ''}`}>
+                    <div class="vn-title">{v.title}</div>
+                    <div class="vn-meta">{v.subtitle}</div>
+                    <span class="vn-badge">{v.badge}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Performance history */}
+        {d.performances.length > 0 && (
+          <div class="section">
+            <div class="section-head">
+              <span class="section-title">Performance history</span>
+              <span class="section-count">{d.performances.length} performances</span>
+            </div>
+            <div class="perf-list">
+              {d.performances.map(p => (
+                <div class="perf-item">
+                  <span class="perf-date">{p.date}</span>
+                  <div class="perf-info">
+                    <div class="perf-ensemble">{p.ensemble}</div>
+                    <div class="perf-venue">{p.venue}{p.city ? `, ${p.city}` : ''}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Sidebar */}
+      <div>
+        <div class="sidebar-box">
+          <h3>Details</h3>
+          <div class="d-row"><span class="d-label">Instrumentation</span><span class="d-val">{d.instrumentationDetail || d.instrumentation}</span></div>
+          <div class="d-row"><span class="d-label">Duration</span><span class="d-val">ca. {d.duration.split(':')[0]} minutes</span></div>
+          {d.movements.length > 0 && (
+            <div class="d-row">
+              <span class="d-label">Movements</span>
+              <span class="d-val">
+                {d.movements.map(m => <Fragment>{m.number}. {m.title}<br/></Fragment>)}
+              </span>
+            </div>
+          )}
+          {d.commission && <div class="d-row"><span class="d-label">Commission</span><span class="d-val">{d.commission}</span></div>}
+          {d.dedication && <div class="d-row"><span class="d-label">Dedication</span><span class="d-val">{d.dedication}</span></div>}
+        </div>
+
+        {d.licensing && (
+          <div class="sidebar-box">
+            <h3>Licensing</h3>
+            {d.licensing.performanceFee && <div class="d-row"><span class="d-label">Performance</span><span class="d-val">{d.licensing.performanceFee}</span></div>}
+            {d.licensing.recordingFee && <div class="d-row"><span class="d-label">Recording</span><span class="d-val">{d.licensing.recordingFee}</span></div>}
+            {d.licensing.scorePrice && <div class="d-row"><span class="d-label">Score</span><span class="d-val">${d.licensing.scorePrice} (PDF)</span></div>}
+            {d.licensing.partsRental && <div class="d-row"><span class="d-label">Parts rental</span><span class="d-val">{d.licensing.partsRental}</span></div>}
+            <div style="margin-top:14px">
+              <button class="hero-btn primary" style="width:100%;padding:8px 16px;font-size:11px;border-radius:4px">Inquire about licensing</button>
+            </div>
+          </div>
+        )}
+
+        {d.technicalRequirements && (
+          <div class="sidebar-box">
+            <h3>Technical requirements</h3>
+            <p class="tech-req">{d.technicalRequirements}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Breadcrumb */
+  .breadcrumb {
+    background: var(--navy); padding: 0 2.5rem 1rem;
+    font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.04em;
+  }
+  .breadcrumb a { color: var(--cream-dark); opacity: 0.5; }
+  .breadcrumb a:hover { opacity: 0.8; }
+  .breadcrumb .sep { color: var(--cream-dark); opacity: 0.3; margin: 0 8px; }
+  .breadcrumb .current { color: var(--gold); opacity: 0.8; }
+
+  /* Hero */
+  .hero {
+    background: var(--navy); padding: 0 0 2.5rem;
+    border-bottom: 2px solid var(--gold); position: relative; overflow: hidden;
+  }
+  .hero-inner {
+    display: grid; grid-template-columns: 1fr 300px;
+    gap: 2rem; align-items: end;
+  }
+  .hero h1 {
+    font-size: 38px; font-weight: 300; color: var(--cream);
+    letter-spacing: -0.01em; line-height: 1.15; margin-bottom: 6px;
+  }
+  .hero-sub { font-size: 16px; color: var(--cream-dark); opacity: 0.7; margin-bottom: 16px; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hm-item { display: flex; flex-direction: column; gap: 2px; }
+  .hm-label {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--cream-dark); opacity: 0.4;
+  }
+  .hm-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--cream); opacity: 0.9; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .hero-tag {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    padding: 3px 10px; border-radius: 3px;
+    background: rgba(245,240,232,0.1); color: var(--cream-dark);
+    opacity: 0.7; border: 1px solid rgba(245,240,232,0.1);
+  }
+  .hero-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+  .hero-btn {
+    padding: 10px 24px; border-radius: 6px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s;
+    text-align: center; min-width: 200px; border: none;
+  }
+  .hero-btn.primary { background: var(--gold); color: var(--navy); font-weight: 500; }
+  .hero-btn.primary:hover { background: var(--gold-light); }
+  .hero-btn.secondary {
+    background: transparent; color: var(--cream);
+    border: 1px solid rgba(245,240,232,0.3);
+  }
+  .hero-btn.secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Content */
+  .content { max-width: 1200px; margin: 0 auto; padding: 2rem 2.5rem; }
+  .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 2.5rem; align-items: start; }
+  .section { margin-bottom: 2.5rem; }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem; border-bottom: 1px solid var(--cream-dark); padding-bottom: 8px;
+  }
+  .section-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; }
+  .section-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-light); }
+  .section-subtitle {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-light); margin-bottom: 12px;
+  }
+
+  /* Program note */
+  .program-note {
+    font-family: 'Source Serif 4', serif; font-size: 15px;
+    line-height: 1.75; color: var(--text-mid); max-width: 680px;
+  }
+  .program-note p { margin-bottom: 1rem; }
+
+  /* Score grid */
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .score-card {
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+    padding: 16px; transition: border-color 0.2s; cursor: pointer;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .score-card:hover { border-color: var(--gold); }
+  .score-preview {
+    background: var(--cream); border-radius: 4px; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .staff-lines { display: flex; flex-direction: column; gap: 5px; width: 80%; }
+  .staff-lines div { height: 1px; background: var(--text-light); opacity: 0.15; }
+  .sc-title { font-size: 13px; font-weight: 500; }
+  .sc-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-light); }
+  .sc-actions { display: flex; gap: 6px; margin-top: auto; }
+  .sc-act {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 5px 12px; border-radius: 4px;
+    border: 1px solid var(--cream-dark); background: transparent;
+    color: var(--text-mid); cursor: pointer; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .sc-act:hover { border-color: var(--gold); color: var(--gold-muted); }
+  .sc-act.primary { background: var(--gold-pale); border-color: var(--gold-pale); color: var(--gold-muted); }
+  .sc-act.primary:hover { background: var(--gold); color: var(--navy); }
+
+  /* Video */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .video-card {
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+    overflow: hidden; transition: border-color 0.2s; cursor: pointer;
+  }
+  .video-card:hover { border-color: var(--gold); }
+  .video-thumb {
+    background: var(--navy); height: 160px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .vp-icon {
+    width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.6; transition: opacity 0.2s;
+  }
+  .video-card:hover .vp-icon { opacity: 1; }
+  .vp-tri {
+    width: 0; height: 0;
+    border-top: 11px solid transparent; border-bottom: 11px solid transparent;
+    border-left: 18px solid var(--cream); margin-left: 3px;
+  }
+  .v-badge {
+    position: absolute; top: 10px; right: 10px;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    padding: 3px 10px; border-radius: 3px;
+    background: rgba(0,0,0,0.5); color: var(--cream);
+  }
+  .v-info { padding: 14px 16px; }
+  .v-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .v-detail { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-light); }
+
+  /* Versions */
+  .versions-box { background: white; border: 1px solid var(--cream-dark); border-radius: 8px; padding: 20px; }
+  .v-branch { display: flex; align-items: center; margin-bottom: 8px; }
+  .v-branch:last-child { margin-bottom: 0; }
+  .v-indent { flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end; }
+  .vn {
+    background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 6px;
+    padding: 12px 16px; transition: border-color 0.2s; cursor: pointer;
+    position: relative; flex: 1;
+  }
+  .vn:hover { border-color: var(--gold); }
+  .vn.current { border-color: var(--gold); border-width: 2px; background: var(--gold-pale); }
+  .vn-title { font-size: 13px; font-weight: 500; }
+  .vn-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-light); margin-top: 2px; }
+  .vn-badge {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    padding: 2px 8px; border-radius: 3px;
+    background: var(--tag-bg); color: var(--tag-color);
+    position: absolute; top: 8px; right: 8px;
+  }
+  .vn.current .vn-badge { background: var(--gold); color: var(--navy); }
+
+  /* Performances */
+  .perf-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 16px; background: white;
+    border: 1px solid var(--cream-dark); border-bottom: none;
+    transition: background 0.15s;
+  }
+  .perf-item:first-child { border-radius: 8px 8px 0 0; }
+  .perf-item:last-child { border-radius: 0 0 8px 8px; border-bottom: 1px solid var(--cream-dark); }
+  .perf-item:only-child { border-radius: 8px; border-bottom: 1px solid var(--cream-dark); }
+  .perf-item:hover { background: rgba(200,150,62,0.03); }
+  .perf-date {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--text-mid); min-width: 100px; flex-shrink: 0;
+  }
+  .perf-ensemble { font-size: 14px; font-weight: 500; }
+  .perf-venue { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+  /* Sidebar */
+  .sidebar-box {
+    background: white; border: 1px solid var(--cream-dark);
+    border-radius: 8px; padding: 20px; margin-bottom: 16px;
+  }
+  .sidebar-box h3 { font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+  .d-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0; border-bottom: 1px solid var(--cream-mid);
+  }
+  .d-row:last-child { border-bottom: none; }
+  .d-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light);
+  }
+  .d-val { font-size: 13px; text-align: right; }
+  .tech-req { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .hero-right { align-items: stretch; }
+    .hero-btn { min-width: auto; }
+    .content { padding: 1.5rem; }
+    .main-layout { grid-template-columns: 1fr; }
+    .breadcrumb { padding: 0 1.5rem 0.75rem; }
+    .hero h1 { font-size: 30px; }
+    .score-grid { grid-template-columns: 1fr 1fr; }
+    .video-grid { grid-template-columns: 1fr; }
+  }
+</style>

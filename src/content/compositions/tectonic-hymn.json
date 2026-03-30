@@ -1,0 +1,20 @@
+{
+  "title": "Tectonic Hymn",
+  "subtitle": "for orchestra",
+  "year": 2023,
+  "duration": "22:15",
+  "status": "published",
+  "instrumentation": "orchestra",
+  "tags": {
+    "character": ["Propulsive", "Energetic"],
+    "tonality": ["Tonal"],
+    "tempo": ["Varied"],
+    "technique": ["Rhythmic"],
+    "instrumentation": ["Orchestra"],
+    "difficulty": ["Advanced"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "orchestral"
+  }
+}

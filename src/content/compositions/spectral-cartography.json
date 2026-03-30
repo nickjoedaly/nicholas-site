@@ -1,0 +1,20 @@
+{
+  "title": "Spectral Cartography",
+  "subtitle": "for ensemble and electronics",
+  "year": 2019,
+  "duration": "12:30",
+  "status": "published",
+  "instrumentation": "fl, cl, vln, vlc, pno, elec",
+  "tags": {
+    "character": ["Mysterious"],
+    "tonality": ["Atonal"],
+    "tempo": ["Varied"],
+    "technique": ["Electronics"],
+    "instrumentation": ["Chamber", "Electronics"],
+    "difficulty": ["Advanced"]
+  },
+  "licensing": {
+    "available": true,
+    "category": "chamber"
+  }
+}
