@@ -1,0 +1,11 @@
+{
+  "name": "Rhythmic unison",
+  "suite": "Rhythm",
+  "type": "Constraint",
+  "desc": "Force all voices into rhythmic alignment.",
+  "prompt": "Every voice plays the same rhythm. Only pitch and timbre differentiate them.",
+  "color": "#8a3a5a",
+  "bgColor": "#f8e8f0",
+  "cardNumber": "R-09",
+  "tier": "premium"
+}

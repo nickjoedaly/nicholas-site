@@ -1,0 +1,11 @@
+{
+  "name": "Fragmentation",
+  "suite": "Development",
+  "type": "Workshop",
+  "desc": "Break existing material into smaller units and recombine.",
+  "prompt": "Take your main theme. Shatter it. Rebuild from the shards.",
+  "color": "#5a6a3a",
+  "bgColor": "#f0f4e8",
+  "cardNumber": "D-06",
+  "tier": "premium"
+}

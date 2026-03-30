@@ -1,0 +1,11 @@
+{
+  "name": "Organic growth",
+  "suite": "Form",
+  "type": "Generative",
+  "desc": "Let the piece evolve without imposed structure.",
+  "prompt": "Begin with a seed. Let each subsequent moment grow from the previous. No plan.",
+  "color": "#2a7a5a",
+  "bgColor": "#e8f5ee",
+  "cardNumber": "F-08",
+  "tier": "free"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Transparent texture",
+  "suite": "Timbre",
+  "type": "Wonder",
+  "desc": "Create a texture where every voice is independently audible.",
+  "prompt": "Write for your forces such that a listener could follow any single line from start to finish.",
+  "color": "#6b4c8a",
+  "bgColor": "#f0eaf5",
+  "cardNumber": "T-12",
+  "tier": "premium"
+}

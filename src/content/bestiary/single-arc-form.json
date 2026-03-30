@@ -1,0 +1,11 @@
+{
+  "name": "Single arc form",
+  "suite": "Form",
+  "type": "Constraint",
+  "desc": "Shape the entire piece as one continuous arc.",
+  "prompt": "One crescendo. One climax. One descent. Nothing repeats, nothing returns.",
+  "color": "#2a7a5a",
+  "bgColor": "#e8f5ee",
+  "cardNumber": "F-11",
+  "tier": "premium"
+}

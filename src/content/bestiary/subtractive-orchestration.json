@@ -1,0 +1,11 @@
+{
+  "name": "Subtractive orchestration",
+  "suite": "Instrumentation",
+  "type": "Workshop",
+  "desc": "Reduce your ensemble to reveal hidden voices.",
+  "prompt": "Take your fullest passage. Remove instruments one by one until only the essential remains.",
+  "color": "#7a5a4a",
+  "bgColor": "#f4ece8",
+  "cardNumber": "I-05",
+  "tier": "free"
+}

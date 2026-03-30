@@ -1,0 +1,11 @@
+{
+  "name": "Additive process",
+  "suite": "Development",
+  "type": "Generative",
+  "desc": "Build material by adding one element at a time.",
+  "prompt": "Start with one note. Add one element per iteration. Stop when adding would mean losing.",
+  "color": "#5a6a3a",
+  "bgColor": "#f0f4e8",
+  "cardNumber": "D-01",
+  "tier": "free"
+}

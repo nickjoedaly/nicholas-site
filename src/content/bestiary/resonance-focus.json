@@ -1,0 +1,11 @@
+{
+  "name": "Resonance focus",
+  "suite": "Timbre",
+  "type": "Workshop",
+  "desc": "Amplify the natural resonance of your chosen instruments.",
+  "prompt": "Find the resonant sweet spots of each instrument. Build your harmony from those frequencies.",
+  "color": "#6b4c8a",
+  "bgColor": "#f0eaf5",
+  "cardNumber": "T-06",
+  "tier": "premium"
+}

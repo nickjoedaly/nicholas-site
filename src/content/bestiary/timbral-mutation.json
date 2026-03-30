@@ -1,0 +1,11 @@
+{
+  "name": "Timbral mutation",
+  "suite": "Timbre",
+  "type": "Wonder",
+  "desc": "Transform one sound into another across the duration of a piece.",
+  "prompt": "Choose two timbres that seem incompatible. Find the path between them.",
+  "color": "#6b4c8a",
+  "bgColor": "#f0eaf5",
+  "cardNumber": "T-01",
+  "tier": "free"
+}

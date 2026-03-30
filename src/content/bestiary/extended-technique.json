@@ -1,0 +1,11 @@
+{
+  "name": "Extended technique",
+  "suite": "Timbre",
+  "type": "Constraint",
+  "desc": "Limit yourself to unconventional sound production.",
+  "prompt": "Write for an instrument you know well — but forbid all standard playing techniques.",
+  "color": "#6b4c8a",
+  "bgColor": "#f0eaf5",
+  "cardNumber": "T-08",
+  "tier": "premium"
+}

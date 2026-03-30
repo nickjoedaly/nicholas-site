@@ -1,0 +1,11 @@
+{
+  "name": "Modal mixture",
+  "suite": "Harmony",
+  "type": "Generative",
+  "desc": "Freely borrow chords from parallel modes.",
+  "prompt": "Choose a key. Borrow one chord from each of three parallel modes. Build a progression.",
+  "color": "#b85c20",
+  "bgColor": "#faf0e6",
+  "cardNumber": "H-11",
+  "tier": "free"
+}

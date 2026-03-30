@@ -1,0 +1,11 @@
+{
+  "name": "Melodic inversion",
+  "suite": "Melody",
+  "type": "Generative",
+  "desc": "Take an existing melody and invert every interval.",
+  "prompt": "Write a melody. Mirror it. Which is the real one?",
+  "color": "#3a6a9a",
+  "bgColor": "#e8f0f8",
+  "cardNumber": "M-04",
+  "tier": "free"
+}

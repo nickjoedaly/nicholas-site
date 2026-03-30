@@ -1,0 +1,11 @@
+{
+  "name": "Polymetric layering",
+  "suite": "Rhythm",
+  "type": "Generative",
+  "desc": "Layer rhythmic patterns in different meters simultaneously.",
+  "prompt": "Set two independent meters against each other. Neither yields.",
+  "color": "#8a3a5a",
+  "bgColor": "#f8e8f0",
+  "cardNumber": "R-03",
+  "tier": "free"
+}

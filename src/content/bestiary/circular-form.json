@@ -1,0 +1,11 @@
+{
+  "name": "Circular form",
+  "suite": "Form",
+  "type": "Generative",
+  "desc": "Create a piece that ends where it begins.",
+  "prompt": "Write a piece whose last bar is its first. The listener should feel the loop as a revelation, not a trick.",
+  "color": "#2a7a5a",
+  "bgColor": "#e8f5ee",
+  "cardNumber": "F-02",
+  "tier": "free"
+}
