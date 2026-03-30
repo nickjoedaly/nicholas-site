@@ -1,0 +1,210 @@
+---
+export const prerender = false;
+
+interface Props {
+  title: string;
+  badge?: string;
+  activeNav?: string;
+  showAiPanel?: boolean;
+}
+
+const { title, badge, activeNav = 'compositions', showAiPanel = true } = Astro.props;
+
+// Sidebar nav structure
+const navSections = [
+  {
+    label: 'Catalog',
+    items: [
+      { id: 'compositions', icon: 'C', label: 'Compositions', count: null, href: '/admin/compositions' },
+      { id: 'assets', icon: 'A', label: 'Assets', count: null, href: '#' },
+      { id: 'tags', icon: 'T', label: 'Tags', count: null, href: '#' },
+      { id: 'licenses', icon: 'L', label: 'Licenses', href: '#' },
+    ],
+  },
+  {
+    label: 'Business',
+    items: [
+      { id: 'commissions', icon: '$', label: 'Commissions', count: null, href: '#' },
+      { id: 'orders', icon: 'O', label: 'Orders', href: '#' },
+      { id: 'performances', icon: 'P', label: 'Performances', count: null, href: '#' },
+    ],
+  },
+  {
+    label: 'Data',
+    items: [
+      { id: 'export', icon: 'E', label: 'Export / Import', href: '#' },
+      { id: 'files', icon: 'F', label: 'File browser', href: '#' },
+    ],
+  },
+  {
+    label: 'Site',
+    items: [
+      { id: 'public', icon: 'W', label: 'View public site', href: '/' },
+      { id: 'settings', icon: 'S', label: 'Settings', href: '#' },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} — Nicholas Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+
+<div class="admin">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="/admin" class="sb-logo">Nicholas <span>Admin</span></a>
+    {navSections.map(section => (
+      <Fragment>
+        <div class="sb-label">{section.label}</div>
+        <ul class="sb-nav">
+          {section.items.map(item => (
+            <li>
+              <a href={item.href} class={item.id === activeNav ? 'active' : ''}>
+                <span class="sb-icon">{item.icon}</span>
+                {item.label}
+                {item.count !== undefined && item.count !== null && <span class="sb-count">{item.count}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Fragment>
+    ))}
+    <div class="sb-footer"><a href="/api/admin/logout">Sign out</a></div>
+  </div>
+
+  <!-- Main area -->
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">{title}</span>
+        {badge && <span class="topbar-badge">{badge}</span>}
+      </div>
+      <div class="topbar-actions">
+        <slot name="topbar-actions" />
+      </div>
+    </div>
+
+    <div class={showAiPanel ? 'split-layout' : 'catalog-panel'}>
+      <div class="catalog-panel">
+        <slot />
+      </div>
+
+      {showAiPanel && (
+        <div class="ai-panel">
+          <div class="ai-header">
+            <div class="ai-dot"></div>
+            <span class="ai-title">Catalog assistant</span>
+            <span class="ai-model">Claude Sonnet 4</span>
+          </div>
+          <div class="ai-messages" id="aiMessages">
+            <div class="ai-msg assistant">
+              <span class="ai-msg-label">Catalog assistant</span>
+              <div class="ai-msg-body">
+                I can help you manage your catalog. Try asking me to rewrite program notes, fill missing tags, standardize metadata, or find incomplete entries.
+              </div>
+            </div>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-btn" data-prompt="Rewrite program notes for all published compositions to be more engaging">Rewrite program notes</button>
+            <button class="quick-btn" data-prompt="Find compositions with missing tags and suggest appropriate ones">Fill missing tags</button>
+            <button class="quick-btn" data-prompt="Standardize instrumentation labels across all compositions">Standardize instrumentation</button>
+            <button class="quick-btn" data-prompt="List all compositions that are incomplete or missing key fields">Find incomplete entries</button>
+          </div>
+          <div class="ai-input-area">
+            <textarea class="ai-input" id="aiInput" placeholder="Ask Claude to edit your catalog..." rows="1"></textarea>
+            <button class="send-btn" id="sendBtn">Send</button>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+  @import '../styles/admin.css';
+
+  /* Reset html font-size for admin — admin has its own scale */
+  html { font-size: 100%; }
+</style>
+
+<script>
+// AI chat functionality
+const sendBtn = document.getElementById('sendBtn');
+const aiInput = document.getElementById('aiInput');
+const aiMessages = document.getElementById('aiMessages');
+
+function addMessage(role, html) {
+  if (!aiMessages) return;
+  const msg = document.createElement('div');
+  msg.className = 'ai-msg ' + role;
+  const label = document.createElement('span');
+  label.className = 'ai-msg-label';
+  label.textContent = role === 'user' ? 'You' : 'Catalog assistant';
+  const body = document.createElement('div');
+  body.className = 'ai-msg-body';
+  body.innerHTML = html;
+  msg.appendChild(label);
+  msg.appendChild(body);
+  aiMessages.appendChild(msg);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+async function sendMessage() {
+  if (!aiInput) return;
+  const text = aiInput.value.trim();
+  if (!text) return;
+
+  addMessage('user', text);
+  aiInput.value = '';
+
+  // Show typing indicator
+  addMessage('assistant', '<span style="opacity:0.5">Thinking...</span>');
+
+  try {
+    const res = await fetch('/api/admin/ai-assist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    });
+    const data = await res.json();
+
+    // Remove typing indicator
+    const msgs = aiMessages.querySelectorAll('.ai-msg.assistant');
+    const last = msgs[msgs.length - 1];
+    if (last) last.querySelector('.ai-msg-body').innerHTML = data.response || data.error || 'No response';
+  } catch (err) {
+    const msgs = aiMessages.querySelectorAll('.ai-msg.assistant');
+    const last = msgs[msgs.length - 1];
+    if (last) last.querySelector('.ai-msg-body').innerHTML = 'Error connecting to AI assistant. Make sure CLAUDE_API_KEY is set in your .env file.';
+  }
+}
+
+sendBtn?.addEventListener('click', sendMessage);
+aiInput?.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Quick action buttons
+document.querySelectorAll('.quick-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    if (aiInput) {
+      aiInput.value = btn.dataset.prompt || '';
+      sendMessage();
+    }
+  });
+});
+</script>

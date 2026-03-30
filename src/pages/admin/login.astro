@@ -1,0 +1,31 @@
+---
+export const prerender = false;
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Nicholas Admin</title>
+</head>
+<body>
+<div class="login-page">
+  <form class="login-card" method="POST" action="/api/admin/login">
+    <div class="login-title">Nicholas <span style="color:var(--gold)">Admin</span></div>
+    <div class="login-sub">Sign in to manage your catalog</div>
+    {error && <div class="login-error">Invalid password. Try again.</div>}
+    <input class="login-input" type="password" name="password" placeholder="Password" autofocus required />
+    <button class="login-btn" type="submit">Sign in</button>
+  </form>
+</div>
+</body>
+</html>
+
+<style is:global>
+  @import '../../styles/global.css';
+  @import '../../styles/admin.css';
+  html { font-size: 100%; }
+</style>

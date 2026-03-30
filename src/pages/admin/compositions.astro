@@ -1,0 +1,211 @@
+---
+export const prerender = false;
+
+import AdminLayout from '@layouts/AdminLayout.astro';
+import { getCollection } from 'astro:content';
+
+const compositions = await getCollection('compositions');
+const comps = compositions.map(c => ({ id: c.id, ...c.data }));
+const published = comps.filter(c => c.status === 'published').length;
+const drafts = comps.filter(c => c.status === 'draft').length;
+const wip = comps.filter(c => c.status === 'wip').length;
+const totalAssets = comps.reduce((sum, c) => sum + (c.assets?.length || 0), 0);
+const totalPerformances = comps.reduce((sum, c) => sum + (c.performances?.length || 0), 0);
+
+const statusMap: Record<string, { cls: string; label: string }> = {
+  published: { cls: 'status-published', label: 'Published' },
+  draft: { cls: 'status-draft', label: 'Draft' },
+  wip: { cls: 'status-wip', label: 'In progress' },
+};
+---
+
+<AdminLayout title="Compositions" badge={`${comps.length} works`} activeNav="compositions">
+  <Fragment slot="topbar-actions">
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="dashboard">Dashboard</button>
+      <button class="view-btn" data-view="spreadsheet">Spreadsheet</button>
+      <button class="view-btn" data-view="json">JSON</button>
+    </div>
+    <button class="admin-btn">Export CSV</button>
+    <button class="admin-btn primary">+ New composition</button>
+  </Fragment>
+
+  <!-- Dashboard View -->
+  <div id="view-dashboard">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total works</div>
+        <div class="stat-val">{comps.length}</div>
+        <div class="stat-sub">{published} published this year</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Assets managed</div>
+        <div class="stat-val">{totalAssets}</div>
+        <div class="stat-sub">scores, parts, audio, electronics</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Status breakdown</div>
+        <div class="stat-val">{published}/{drafts}/{wip}</div>
+        <div class="stat-sub">published / draft / in progress</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Performances</div>
+        <div class="stat-val">{totalPerformances}</div>
+        <div class="stat-sub">across all compositions</div>
+      </div>
+    </div>
+
+    <div class="toolbar-row">
+      <input class="search-input" type="text" placeholder="Search compositions..." id="adminSearch" />
+      <select class="filter-select" id="statusFilter">
+        <option value="">All statuses</option>
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
+        <option value="wip">In progress</option>
+      </select>
+      <select class="filter-select" id="yearFilter">
+        <option value="">All years</option>
+        {[...new Set(comps.map(c => c.year))].sort((a, b) => b - a).map(y => (
+          <option value={String(y)}>{y}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="catalog-table">
+      <table class="ct">
+        <thead>
+          <tr>
+            <th style="width:20%">Title</th>
+            <th style="width:13%">Instr.</th>
+            <th style="width:6%">Year</th>
+            <th style="width:8%">Status</th>
+            <th style="width:14%">Assets</th>
+            <th style="width:25%">Program note</th>
+            <th style="width:8%">Tags</th>
+          </tr>
+        </thead>
+        <tbody id="compTableBody">
+          {comps.sort((a, b) => b.year - a.year).map(c => {
+            const allTags = Object.values(c.tags).flat();
+            const s = statusMap[c.status] || statusMap.draft;
+            return (
+              <tr data-id={c.id} data-status={c.status} data-year={String(c.year)} data-title={c.title.toLowerCase()} data-instr={c.instrumentation.toLowerCase()}>
+                <td class="title-cell">{c.title}</td>
+                <td class="mono" style="font-size:11px">{c.instrumentation}</td>
+                <td class="mono" style="font-size:11px">{c.year}</td>
+                <td><span class={`status-badge ${s.cls}`}>{s.label}</span></td>
+                <td>
+                  <div class="asset-pills">
+                    <span class={`asset-pill ${c.assets?.some(a => a.type === 'score') ? 'has' : 'missing'}`}>Score</span>
+                    <span class={`asset-pill ${c.assets?.some(a => a.type === 'parts') ? 'has' : 'missing'}`}>Parts</span>
+                    <span class={`asset-pill ${c.assets?.some(a => a.type === 'audio' || a.type === 'recording') ? 'has' : 'missing'}`}>Audio</span>
+                    <span class={`asset-pill ${c.assets?.some(a => a.type === 'electronics') ? 'has' : 'missing'}`}>Elec</span>
+                  </div>
+                </td>
+                <td class="note-cell">{c.programNote || '—'}</td>
+                <td class="mono" style="font-size:11px">{allTags.length}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Spreadsheet View -->
+  <div id="view-spreadsheet" style="display:none">
+    <div class="spreadsheet-view">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Subtitle</th>
+            <th>Year</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Instrumentation</th>
+            <th>Commission</th>
+            <th>Premiere</th>
+          </tr>
+        </thead>
+        <tbody>
+          {comps.sort((a, b) => b.year - a.year).map(c => (
+            <tr>
+              <td contenteditable="true">{c.title}</td>
+              <td contenteditable="true">{c.subtitle || ''}</td>
+              <td contenteditable="true">{c.year}</td>
+              <td contenteditable="true">{c.duration}</td>
+              <td contenteditable="true">{c.status}</td>
+              <td contenteditable="true">{c.instrumentation}</td>
+              <td contenteditable="true">{c.commission || ''}</td>
+              <td contenteditable="true">{c.premiere || ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JSON View -->
+  <div id="view-json" style="display:none">
+    <div class="json-view">
+      <pre id="jsonContent"></pre>
+    </div>
+  </div>
+</AdminLayout>
+
+<script define:vars={{ comps }}>
+// View switching
+document.querySelectorAll('.view-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var view = btn.dataset.view;
+    document.getElementById('view-dashboard').style.display = view === 'dashboard' ? '' : 'none';
+    document.getElementById('view-spreadsheet').style.display = view === 'spreadsheet' ? '' : 'none';
+    document.getElementById('view-json').style.display = view === 'json' ? '' : 'none';
+
+    // Populate JSON view on first open
+    if (view === 'json') {
+      var pre = document.getElementById('jsonContent');
+      if (pre && !pre.innerHTML) {
+        pre.innerHTML = syntaxHighlight(JSON.stringify(comps, null, 2));
+      }
+    }
+  });
+});
+
+// JSON syntax highlighting
+function syntaxHighlight(json) {
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+    var cls = 'json-number';
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) { cls = 'json-key'; }
+      else { cls = 'json-string'; }
+    } else if (/true|false/.test(match)) { cls = 'json-bool'; }
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
+}
+
+// Dashboard search and filter
+var searchInput = document.getElementById('adminSearch');
+var statusFilter = document.getElementById('statusFilter');
+var yearFilter = document.getElementById('yearFilter');
+
+function filterTable() {
+  var search = searchInput ? searchInput.value.toLowerCase() : '';
+  var status = statusFilter ? statusFilter.value : '';
+  var year = yearFilter ? yearFilter.value : '';
+
+  document.querySelectorAll('#compTableBody tr').forEach(function(row) {
+    var matchSearch = !search || row.dataset.title.indexOf(search) > -1 || row.dataset.instr.indexOf(search) > -1;
+    var matchStatus = !status || row.dataset.status === status;
+    var matchYear = !year || row.dataset.year === year;
+    row.style.display = matchSearch && matchStatus && matchYear ? '' : 'none';
+  });
+}
+
+searchInput?.addEventListener('input', filterTable);
+statusFilter?.addEventListener('change', filterTable);
+yearFilter?.addEventListener('change', filterTable);
+</script>
