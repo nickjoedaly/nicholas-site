@@ -1,0 +1,23 @@
+{
+  "name": "Form Scaffold",
+  "tagline": "Generate formal scaffolds for 8 form types",
+  "description": "Creates section-by-section formal scaffolds for Sonata, Rondo, Theme & Variations, Ternary/Minuet & Trio, Binary, Fugue, Concerto, and Song Form. Includes historical presets (Classical/Romantic), section properties, rehearsal marks, staff text, and form map output.",
+  "type": "MuseScore Plugin",
+  "badge": "Paid",
+  "features": [
+    "8 form types",
+    "Classical & Romantic presets",
+    "Section properties (tempo, time sig, key)",
+    "Rehearsal marks & staff text",
+    "Form map output"
+  ],
+  "versionHistory": [
+    { "version": "3.2", "date": "2025-01-15", "notes": "Added Song Form type and improved Fugue scaffolding" },
+    { "version": "3.0", "date": "2024-06-01", "notes": "Major rewrite with historical presets" }
+  ],
+  "price": 8,
+  "changelog": [
+    { "version": "v3.2", "items": ["Added Song Form type", "Improved Fugue scaffolding"] },
+    { "version": "v3.0", "items": ["Major rewrite with historical presets", "Added section properties", "Form map output"] }
+  ]
+}

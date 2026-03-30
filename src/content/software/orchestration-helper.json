@@ -1,0 +1,20 @@
+{
+  "name": "Orchestration Helper",
+  "tagline": "Range validation, doubling detection, and balance analysis",
+  "description": "Real-time orchestration assistant that validates instrument ranges, detects unintentional doublings, analyzes balance across sections, and supports 60+ instruments.",
+  "type": "MuseScore Plugin",
+  "badge": "Paid",
+  "features": [
+    "Range validation",
+    "Doubling detection",
+    "Balance analysis",
+    "60+ instruments supported"
+  ],
+  "versionHistory": [
+    { "version": "1.2", "date": "2024-11-01", "notes": "Added percussion and harp support" }
+  ],
+  "price": 10,
+  "changelog": [
+    { "version": "v1.2", "items": ["Added percussion and harp support"] }
+  ]
+}

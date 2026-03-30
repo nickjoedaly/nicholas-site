@@ -1,0 +1,22 @@
+{
+  "name": "Bestiary Draw Tool",
+  "tagline": "Interactive card draw for the Compositional Bestiary",
+  "description": "Web-based draw tool for the Compositional Bestiary. Draw single cards, 3-card spreads, or full 5-card generative layouts. Free preview with limited cards; full deck with purchase.",
+  "type": "Web App",
+  "badge": "Free to try",
+  "features": [
+    "Single card draw",
+    "3-card spreads",
+    "5-card generative layouts",
+    "Suite filtering",
+    "Save & share spreads"
+  ],
+  "versionHistory": [
+    { "version": "1.0", "date": "2024-09-01", "notes": "Initial release" }
+  ],
+  "price": null,
+  "githubLink": "https://github.com/nickjoedaly/bestiary-draw",
+  "changelog": [
+    { "version": "v1.0", "items": ["Initial release with single draw, 3-card, and 5-card layouts", "Suite filtering", "Save & share functionality"] }
+  ]
+}

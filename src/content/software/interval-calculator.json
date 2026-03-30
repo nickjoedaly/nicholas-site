@@ -1,0 +1,22 @@
+{
+  "name": "Interval Calculator",
+  "tagline": "Pitch interval calculation and reference charts",
+  "description": "Quick reference tool for pitch intervals, inversions, transpositions, and enharmonic equivalents. Useful for students and composers working with atonal or serial techniques.",
+  "type": "Web App",
+  "badge": "Free",
+  "features": [
+    "Interval identification",
+    "Inversions",
+    "Transposition calculator",
+    "Enharmonic equivalents",
+    "Reference charts"
+  ],
+  "versionHistory": [
+    { "version": "1.0", "date": "2024-03-01", "notes": "Initial release" }
+  ],
+  "price": null,
+  "githubLink": "https://github.com/nickjoedaly/interval-calc",
+  "changelog": [
+    { "version": "v1.0", "items": ["Initial release with interval identification, inversions, transposition, and enharmonic equivalents"] }
+  ]
+}

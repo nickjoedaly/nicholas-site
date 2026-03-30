@@ -1,0 +1,329 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const compositions = await getCollection('compositions');
+const commissioned = compositions.filter(c => c.data.commission && c.data.status === 'published').slice(0, 3);
+---
+
+<BaseLayout title="Commission a New Work — Nicholas Composer">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>Commission a new work</h1>
+      <p class="hero-desc">Every commission begins as a conversation. Tell me about your project, ensemble, and vision — I'll respond within a few days to discuss possibilities.</p>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="process">
+      <div class="process-step">
+        <span class="step-num mono">01</span>
+        <div class="step-title">Inquiry</div>
+        <div class="step-desc mono">Submit the form below with your project details</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num mono">02</span>
+        <div class="step-title">Conversation</div>
+        <div class="step-desc mono">We discuss scope, timeline, and creative direction</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num mono">03</span>
+        <div class="step-title">Agreement</div>
+        <div class="step-desc mono">Contract, fee structure, and milestone schedule</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num mono">04</span>
+        <div class="step-title">Composition</div>
+        <div class="step-desc mono">Drafts, revisions, final score and parts delivered</div>
+      </div>
+    </div>
+
+    <div class="form-card" id="formCard">
+      <!-- Section 1: About you -->
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-num mono">1</div>
+          <div class="form-section-title">About you</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label mono">Your name</label>
+            <input class="form-input" type="text" placeholder="Full name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">Email</label>
+            <input class="form-input" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">Organization <span class="optional">(optional)</span></label>
+            <input class="form-input" type="text" placeholder="Ensemble, festival, institution..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">How did you find me?</label>
+            <select class="form-select mono">
+              <option value="" disabled selected>Select one...</option>
+              <option>Concert / performance</option>
+              <option>Referral from colleague</option>
+              <option>Web search</option>
+              <option>Social media</option>
+              <option>Academic connection</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: The project -->
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-num mono">2</div>
+          <div class="form-section-title">The project</div>
+        </div>
+        <div class="form-section-sub mono">Tell me as much or as little as you know — everything is a starting point for conversation.</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label mono">Context</label>
+            <select class="form-select mono">
+              <option value="" disabled selected>What is this for?</option>
+              <option>Festival commission</option>
+              <option>Ensemble / orchestra season</option>
+              <option>Academic / educational</option>
+              <option>Film / media</option>
+              <option>Personal / private</option>
+              <option>Competition / call for scores</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">Ensemble / instrumentation</label>
+            <input class="form-input" type="text" placeholder="e.g. string quartet, solo piano, orchestra..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">Approximate duration</label>
+            <select class="form-select mono">
+              <option value="" disabled selected>How long?</option>
+              <option>Under 5 minutes</option>
+              <option>5 — 10 minutes</option>
+              <option>10 — 20 minutes</option>
+              <option>20 — 40 minutes</option>
+              <option>Over 40 minutes</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label mono">Timeline</label>
+            <select class="form-select mono">
+              <option value="" disabled selected>When do you need it?</option>
+              <option>Within 3 months</option>
+              <option>3 — 6 months</option>
+              <option>6 — 12 months</option>
+              <option>Over 12 months</option>
+              <option>Flexible / no deadline</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label class="form-label mono">Budget range</label>
+            <div class="radio-group">
+              <div class="radio-option"><input type="radio" name="budget" id="b1"><label class="radio-label mono" for="b1">Under $2,000</label></div>
+              <div class="radio-option"><input type="radio" name="budget" id="b2"><label class="radio-label mono" for="b2">$2,000 — $5,000</label></div>
+              <div class="radio-option"><input type="radio" name="budget" id="b3"><label class="radio-label mono" for="b3">$5,000 — $10,000</label></div>
+              <div class="radio-option"><input type="radio" name="budget" id="b4"><label class="radio-label mono" for="b4">$10,000 — $25,000</label></div>
+              <div class="radio-option"><input type="radio" name="budget" id="b5"><label class="radio-label mono" for="b5">Over $25,000</label></div>
+              <div class="radio-option"><input type="radio" name="budget" id="b6"><label class="radio-label mono" for="b6">Prefer to discuss</label></div>
+            </div>
+            <div class="form-hint mono">Every project is unique — this helps me understand the scope.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Creative direction -->
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-num mono">3</div>
+          <div class="form-section-title">Creative direction</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label mono">Do you have a concept or theme in mind? <span class="optional">(optional)</span></label>
+            <textarea class="form-textarea" placeholder="Describe any artistic vision, thematic ideas, or constraints you'd like the work to explore. If you're not sure yet, that's perfectly fine."></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label mono">Anything else I should know? <span class="optional">(optional)</span></label>
+            <textarea class="form-textarea" placeholder="Technical requirements, performer skill levels, venue considerations, or anything else relevant..." style="min-height:80px"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <div class="checkbox-row">
+          <input type="checkbox" id="consent" />
+          <label class="checkbox-text" for="consent">I understand this is an inquiry, not a binding commitment. Nicholas will respond to discuss the project further before any agreement is made.</label>
+        </div>
+        <div class="submit-row">
+          <button class="submit-btn mono" id="submitBtn">Submit inquiry</button>
+          <div class="submit-note mono">I typically respond within 2–3 business days.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmation" class="confirmation" style="display:none">
+      <div class="conf-title">Inquiry received</div>
+      <div class="conf-text">Thank you for your interest in commissioning a new work.</div>
+      <div class="conf-sub mono">I'll review your project details and respond within 2–3 business days.</div>
+    </div>
+
+    <!-- Past commissions -->
+    <div class="past-section">
+      <div class="past-title">Selected past commissions</div>
+      <div class="past-subtitle mono">A sampling of recent commissions to give a sense of the range of projects I take on.</div>
+      <div class="past-grid">
+        {commissioned.map(c => (
+          <a href={`/compositions/${c.id}`} class="past-card">
+            <div class="past-card-title">{c.data.title}</div>
+            <div class="past-card-sub">{c.data.subtitle}</div>
+            <div class="past-card-meta mono">
+              Commissioned by {c.data.commission}<br />
+              {c.data.premiere && `Premiered ${c.data.premiere}`}<br />
+              Duration: {c.data.duration}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <div class="faq-title">Frequently asked questions</div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">What does the commission process typically look like?</span><span class="faq-toggle mono">+</span></div>
+        <div class="faq-a">After receiving your inquiry, I'll schedule a conversation to discuss your vision, ensemble, timeline, and constraints. If we move forward, I draft a contract with scope, fee, payment schedule, and milestones. During composition, I share drafts at agreed checkpoints for feedback.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">How far in advance should I reach out?</span><span class="faq-toggle mono">+</span></div>
+        <div class="faq-a">Ideally 6–12 months before the desired premiere. For orchestral works, 12–18 months is more realistic. I'm happy to discuss your timeline even if it feels tight.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Do you write for electronics or non-traditional forces?</span><span class="faq-toggle mono">+</span></div>
+        <div class="faq-a">Absolutely. A significant portion of my catalog involves live electronics, and I've written for a wide range of non-standard instruments. I provide all necessary electronics patches, setup documentation, and technical support.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">What rights do I receive as a commissioner?</span><span class="faq-toggle mono">+</span></div>
+        <div class="faq-a">Standard agreements include exclusive performance rights for 6–12 months from premiere, after which the work enters my general catalog. Recording rights and co-commissioning are negotiated individually. I retain copyright.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Can I commission an arrangement of an existing work?</span><span class="faq-toggle mono">+</span></div>
+        <div class="faq-a">Yes — I regularly create arrangements and transcriptions for different ensembles. The process is similar but typically faster, since the musical material already exists.</div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+document.getElementById('submitBtn')?.addEventListener('click', function() {
+  var card = document.getElementById('formCard');
+  var conf = document.getElementById('confirmation');
+  if (card && conf) {
+    card.style.display = 'none';
+    conf.style.display = 'block';
+    conf.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+
+document.querySelectorAll('.faq-item').forEach(function(item) {
+  item.querySelector('.faq-q')?.addEventListener('click', function() {
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(el) { el.classList.remove('open'); });
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+</script>
+
+<style is:global>
+  .hero { background: var(--navy); padding: 2.5rem 2.5rem 3rem; border-bottom: 2px solid var(--gold); }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero h1 { font-size: 36px; font-weight: 300; color: var(--cream); margin-bottom: 8px; }
+  .hero-desc { font-family: 'Source Serif 4', serif; font-size: 16px; color: var(--cream-dark); opacity: 0.6; line-height: 1.65; max-width: 560px; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 2.5rem; }
+
+  .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 3rem; }
+  .process-step { text-align: center; padding: 20px 14px; }
+  .step-num { font-size: 10px; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
+  .step-title { font-family: 'Source Serif 4', serif; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 10px; color: var(--text-light); line-height: 1.5; }
+
+  .form-card { background: white; border: 1px solid var(--cream-dark); border-radius: 10px; padding: 2rem; margin-bottom: 2rem; }
+  .form-section { margin-bottom: 2.5rem; }
+  .form-section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+  .form-section-num { font-size: 10px; color: var(--gold-muted); background: var(--gold-pale); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .form-section-title { font-family: 'Source Serif 4', serif; font-size: 18px; font-weight: 600; }
+  .form-section-sub { font-size: 11px; color: var(--text-light); margin-left: 36px; margin-top: -6px; margin-bottom: 16px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-mid); }
+  .form-label .optional { text-transform: none; letter-spacing: 0; color: var(--text-light); font-weight: 300; }
+  .form-input { padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-dark); background: white; outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--cream-dark); }
+  .form-select { padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 6px; font-size: 12px; color: var(--text-mid); background: white; outline: none; cursor: pointer; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a8580' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  .form-select:focus { border-color: var(--gold); }
+  .form-textarea { padding: 12px 14px; border: 1px solid var(--cream-dark); border-radius: 6px; font-family: 'Source Serif 4', serif; font-size: 14px; line-height: 1.65; color: var(--text-dark); background: white; outline: none; resize: vertical; min-height: 120px; transition: border-color 0.2s; }
+  .form-textarea:focus { border-color: var(--gold); }
+  .form-textarea::placeholder { color: var(--cream-dark); font-family: 'DM Sans', sans-serif; }
+  .form-hint { font-size: 9px; color: var(--text-light); margin-top: 2px; }
+
+  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .radio-option { position: relative; }
+  .radio-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .radio-label { display: block; padding: 8px 16px; border: 1px solid var(--cream-dark); border-radius: 6px; font-size: 11px; color: var(--text-mid); cursor: pointer; transition: all 0.15s; }
+  .radio-label:hover { border-color: var(--gold); color: var(--gold-muted); }
+  .radio-option input:checked + .radio-label { background: var(--gold-pale); border-color: var(--gold); color: var(--gold-muted); font-weight: 500; }
+
+  .form-footer { border-top: 1px solid var(--cream-mid); padding-top: 1.5rem; margin-top: 0.5rem; }
+  .checkbox-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+  .checkbox-row input[type="checkbox"] { accent-color: var(--gold); margin-top: 2px; width: 16px; height: 16px; flex-shrink: 0; }
+  .checkbox-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+  .submit-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 8px; }
+  .submit-btn { padding: 12px 32px; background: var(--gold); color: var(--navy); border: none; border-radius: 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; cursor: pointer; transition: background 0.2s; }
+  .submit-btn:hover { background: var(--gold-light); }
+  .submit-note { font-size: 10px; color: var(--text-light); max-width: 340px; line-height: 1.5; }
+
+  .confirmation { background: #e8f5ee; border: 1px solid #2a7a5a; border-radius: 10px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
+  .conf-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; color: #2a7a5a; margin-bottom: 6px; }
+  .conf-text { font-size: 14px; color: var(--text-mid); margin-bottom: 4px; }
+  .conf-sub { font-size: 11px; color: var(--text-light); }
+
+  .past-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--cream-dark); }
+  .past-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .past-subtitle { font-size: 11px; color: var(--text-light); margin-bottom: 1.5rem; }
+  .past-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .past-card { background: white; border: 1px solid var(--cream-dark); border-radius: 8px; padding: 18px; transition: border-color 0.2s; display: block; }
+  .past-card:hover { border-color: var(--gold); }
+  .past-card-title { font-family: 'Source Serif 4', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .past-card-sub { font-size: 12px; color: var(--text-mid); margin-bottom: 10px; }
+  .past-card-meta { font-size: 10px; color: var(--text-light); line-height: 1.6; }
+
+  .faq-section { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--cream-dark); }
+  .faq-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; margin-bottom: 1.25rem; }
+  .faq-item { border-bottom: 1px solid var(--cream-mid); padding: 14px 0; cursor: pointer; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .faq-q-text { font-size: 14px; font-weight: 500; }
+  .faq-toggle { font-size: 16px; color: var(--text-light); transition: transform 0.2s; flex-shrink: 0; width: 20px; text-align: center; }
+  .faq-item.open .faq-toggle { transform: rotate(45deg); }
+  .faq-a { font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--text-mid); line-height: 1.65; padding-top: 10px; display: none; max-width: 600px; }
+  .faq-item.open .faq-a { display: block; }
+
+  @media (max-width: 768px) {
+    .hero { padding: 2rem 1.5rem; }
+    .hero h1 { font-size: 28px; }
+    .content { padding: 1.5rem; }
+    .process { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .past-grid { grid-template-columns: 1fr; }
+    .submit-row { flex-direction: column; align-items: stretch; }
+    .submit-note { max-width: 100%; }
+  }
+</style>

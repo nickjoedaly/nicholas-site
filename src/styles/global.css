@@ -73,7 +73,7 @@
 
 /* ── Reset ── */
 
-html { font-size: 112.5%; } /* 18px base — scales everything up */
+html { font-size: 112.5%; } /* 18px base — will fine-tune scaling later */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 

@@ -1,0 +1,191 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allSoftware = await getCollection('software');
+const plugins = allSoftware.filter(s => s.data.type === 'MuseScore Plugin');
+const webApps = allSoftware.filter(s => s.data.type === 'Web App');
+---
+
+<BaseLayout title="Software & Plugins — Nicholas Composer">
+  <div class="hero-strip">
+    <h1>Software & Plugins</h1>
+    <p class="mono">MuseScore plugins and web tools for composers and music educators</p>
+  </div>
+
+  <div class="content">
+    <!-- MuseScore Plugins -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">MuseScore Plugins</div>
+        <div class="section-sub mono">Tools that live inside your notation software</div>
+      </div>
+      <div class="plugin-grid">
+        {plugins.map(plugin => (
+          <div class="plugin-card">
+            <div class="plugin-header">
+              <div class="plugin-badge mono" data-badge={plugin.data.badge}>{plugin.data.badge}</div>
+              {plugin.data.price && <div class="plugin-price mono">${plugin.data.price}</div>}
+            </div>
+            <h3 class="plugin-name">{plugin.data.name}</h3>
+            <p class="plugin-tagline">{plugin.data.tagline}</p>
+            <p class="plugin-desc">{plugin.data.description}</p>
+            <div class="plugin-features">
+              {plugin.data.features.map(f => (
+                <span class="plugin-feature mono">{f}</span>
+              ))}
+            </div>
+            {plugin.data.versionHistory.length > 0 && (
+              <div class="plugin-version mono">
+                v{plugin.data.versionHistory[0].version} — {plugin.data.versionHistory[0].notes}
+              </div>
+            )}
+            <div class="plugin-actions">
+              {plugin.data.price ? (
+                <button class="plugin-btn primary mono">Purchase — ${plugin.data.price}</button>
+              ) : (
+                <button class="plugin-btn primary mono">Download free</button>
+              )}
+              {plugin.data.documentationLink && <a class="plugin-btn mono" href={plugin.data.documentationLink}>Docs</a>}
+              {plugin.data.githubLink && <a class="plugin-btn mono" href={plugin.data.githubLink}>GitHub</a>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Web Apps -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Web Tools</div>
+        <div class="section-sub mono">Browser-based tools — no installation required</div>
+      </div>
+      <div class="plugin-grid">
+        {webApps.map(app => (
+          <div class="plugin-card">
+            <div class="plugin-header">
+              <div class="plugin-badge mono" data-badge={app.data.badge}>{app.data.badge}</div>
+              {app.data.price && <div class="plugin-price mono">${app.data.price}</div>}
+            </div>
+            <h3 class="plugin-name">{app.data.name}</h3>
+            <p class="plugin-tagline">{app.data.tagline}</p>
+            <p class="plugin-desc">{app.data.description}</p>
+            <div class="plugin-features">
+              {app.data.features.map(f => (
+                <span class="plugin-feature mono">{f}</span>
+              ))}
+            </div>
+            {app.data.versionHistory.length > 0 && (
+              <div class="plugin-version mono">
+                v{app.data.versionHistory[0].version} — {app.data.versionHistory[0].notes}
+              </div>
+            )}
+            <div class="plugin-actions">
+              {app.data.badge === 'Free to try' ? (
+                <button class="plugin-btn primary mono">Try it free</button>
+              ) : (
+                <button class="plugin-btn primary mono">Open tool</button>
+              )}
+              {app.data.githubLink && <a class="plugin-btn mono" href={app.data.githubLink}>GitHub</a>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Open source note -->
+    <div class="oss-note">
+      <div class="oss-icon">&#60;/&#62;</div>
+      <div>
+        <div class="oss-title">Open source contributions</div>
+        <p class="oss-desc">Free tools and plugins are open source on <a href="https://github.com/nickjoedaly">GitHub</a>. Bug reports, feature requests, and pull requests are welcome.</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .hero-strip {
+    background: var(--navy); padding: 2rem 2.5rem 2.5rem;
+    border-bottom: 2px solid var(--gold);
+  }
+  .hero-strip h1 {
+    font-size: 34px; font-weight: 300; color: var(--cream);
+    letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  }
+  .hero-strip p {
+    font-size: 12px; color: var(--cream-dark); opacity: 0.6; letter-spacing: 0.04em;
+  }
+
+  .content { max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section { margin-bottom: 3rem; }
+  .section-head { margin-bottom: 1.25rem; }
+  .section-title { font-family: 'Source Serif 4', serif; font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .section-sub { font-size: 11px; color: var(--text-light); }
+
+  .plugin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+  .plugin-card {
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+    padding: 24px; transition: border-color 0.2s; display: flex;
+    flex-direction: column; gap: 10px;
+  }
+  .plugin-card:hover { border-color: var(--gold); }
+
+  .plugin-header { display: flex; align-items: center; justify-content: space-between; }
+  .plugin-badge {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 3px;
+  }
+  .plugin-badge[data-badge="Paid"] { background: var(--gold-pale); color: var(--gold-muted); }
+  .plugin-badge[data-badge="Free"] { background: #e8f5ee; color: #2a7a5a; }
+  .plugin-badge[data-badge="Free to try"] { background: #e8f0f8; color: #2a5a8a; }
+  .plugin-price { font-size: 20px; font-weight: 500; color: var(--text-dark); }
+
+  .plugin-name { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; }
+  .plugin-tagline { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-light); }
+  .plugin-desc { font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  .plugin-features { display: flex; flex-wrap: wrap; gap: 5px; }
+  .plugin-feature {
+    font-size: 10px; padding: 3px 10px; border-radius: 3px;
+    background: var(--tag-bg); color: var(--tag-color);
+  }
+
+  .plugin-version {
+    font-size: 10px; color: var(--text-light); padding: 8px 0;
+    border-top: 1px solid var(--cream-mid); margin-top: auto;
+  }
+
+  .plugin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .plugin-btn {
+    padding: 8px 18px; border-radius: 6px; font-size: 11px;
+    cursor: pointer; transition: all 0.2s; border: 1px solid var(--cream-dark);
+    background: white; color: var(--text-mid); text-decoration: none; text-align: center;
+  }
+  .plugin-btn:hover { border-color: var(--gold); color: var(--gold-muted); }
+  .plugin-btn.primary { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 500; }
+  .plugin-btn.primary:hover { background: var(--gold-light); }
+
+  .oss-note {
+    display: flex; align-items: center; gap: 16px;
+    background: white; border: 1px solid var(--cream-dark); border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .oss-icon {
+    font-family: 'DM Mono', monospace; font-size: 18px; color: var(--gold);
+    width: 44px; height: 44px; border-radius: 8px; background: var(--gold-pale);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .oss-title { font-family: 'Source Serif 4', serif; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .oss-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+  .oss-desc a { color: var(--gold-muted); }
+  .oss-desc a:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero-strip { padding: 1.5rem; }
+    .hero-strip h1 { font-size: 26px; }
+    .content { padding: 1.5rem; }
+    .plugin-grid { grid-template-columns: 1fr; }
+  }
+</style>

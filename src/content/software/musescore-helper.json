@@ -1,0 +1,20 @@
+{
+  "name": "MuseScore Helper",
+  "tagline": "Auto cue notes and page turn optimization",
+  "description": "Automates tedious score preparation tasks: generates cue notes, optimizes page turns for performers, syncs rehearsal marks across parts, and creates professional cover pages.",
+  "type": "MuseScore Plugin",
+  "badge": "Paid",
+  "features": [
+    "Auto cue notes",
+    "Page turn optimization",
+    "Rehearsal mark sync",
+    "Cover page generation"
+  ],
+  "versionHistory": [
+    { "version": "2.1", "date": "2025-01-10", "notes": "Fixed cue note positioning in transposing instruments" }
+  ],
+  "price": 8,
+  "changelog": [
+    { "version": "v2.1", "items": ["Fixed cue note positioning in transposing instruments"] }
+  ]
+}
